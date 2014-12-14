@@ -1,4 +1,3 @@
-require 'pathname'
 require_relative 'rouge/version'
 require_relative 'rouge/util'
 require_relative 'rouge/text_analyzer'
