@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class TCL < RegexLexer
-      title "Tcl"
-      desc "The Tool Command Language (tcl.tk)"
+      title 'Tcl'
+      desc 'The Tool Command Language (tcl.tk)'
       tag 'tcl'
       filenames '*.tcl'
       mimetypes 'text/x-tcl', 'text/x-script.tcl', 'application/x-tcl'
@@ -40,8 +38,8 @@ module Rouge
       END_LINE = CLOSE + %w(; \n)
       END_WORD = END_LINE + %w(\s)
 
-      CHARS =     lambda { |list| Regexp.new %/[#{list.join}]/  }
-      NOT_CHARS = lambda { |list| Regexp.new %/[^#{list.join}]/ }
+      CHARS =     lambda { |list| Regexp.new %([#{list.join}])  }
+      NOT_CHARS = lambda { |list| Regexp.new %([^#{list.join}]) }
 
       state :word do
         rule /\{\*\}/, Keyword
@@ -51,10 +49,10 @@ module Rouge
         rule /\{/, Punctuation, :brace
         rule /\(/, Punctuation,   :paren
         rule /"/,  Str::Double, :string
-        rule /#{NOT_CHARS[END_WORD]}+?(?=#{CHARS[OPEN+['\\\\']]})/, Text
+        rule /#{NOT_CHARS[END_WORD]}+?(?=#{CHARS[OPEN + ['\\\\']]})/, Text
       end
 
-      def self.gen_command_state(name='')
+      def self.gen_command_state(name = '')
         state(:"command#{name}") do
           mixin :word
 
@@ -78,7 +76,7 @@ module Rouge
         end
       end
 
-      def self.gen_delimiter_states(name, close, opts={})
+      def self.gen_delimiter_states(name, close, opts = {})
         gen_command_state("_in_#{name}")
 
         state :"params_in_#{name}" do
@@ -104,7 +102,6 @@ module Rouge
           mixin :"command_in_#{name}"
         end
       end
-
 
       # tcl is freaking impossible.  If we're in braces and we encounter
       # a close brace, we have to drop everything and close the brace.
@@ -135,9 +132,9 @@ module Rouge
         rule /#{NOT_CHARS[END_WORD]}+/, Text
       end
 
-      gen_delimiter_states :brace,   /\}/, :strict => false
-      gen_delimiter_states :paren,   /\)/, :strict => true
-      gen_delimiter_states :bracket, /\]/, :strict => true
+      gen_delimiter_states :brace,   /\}/, strict: false
+      gen_delimiter_states :paren,   /\)/, strict: true
+      gen_delimiter_states :bracket, /\]/, strict: true
       gen_command_state
 
       state :root do
@@ -177,7 +174,7 @@ module Rouge
         end
 
         rule /}/ do
-          if in_state? :brace and @brace_count.to_i == 0
+          if in_state?(:brace) && @brace_count.to_i == 0
             pop! until state? :brace
             pop!
             token Punctuation

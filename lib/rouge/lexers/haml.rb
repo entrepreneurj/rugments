@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     # A lexer for the Haml templating system for Ruby.
@@ -7,8 +5,8 @@ module Rouge
     class Haml < RegexLexer
       include Indentation
 
-      title "Haml"
-      desc "The Haml templating system for Ruby (haml.info)"
+      title 'Haml'
+      desc 'The Haml templating system for Ruby (haml.info)'
 
       tag 'haml'
       aliases 'HAML'
@@ -24,14 +22,14 @@ module Rouge
       #   A hash of filter name to lexer of how various filters should be
       #   highlighted.  By default, :javascript, :css, :ruby, and :erb
       #   are supported.
-      def initialize(opts={})
+      def initialize(opts = {})
         (opts.delete(:filters) || {}).each do |name, lexer|
           unless lexer.respond_to? :lex
-            lexer = Lexer.find(lexer) or raise "unknown lexer: #{lexer}"
+            lexer = Lexer.find(lexer) or fail "unknown lexer: #{lexer}"
             lexer = lexer.new(options)
           end
 
-          self.filters[name.to_s] = lexer
+          filters[name.to_s] = lexer
         end
 
         super(opts)
@@ -82,14 +80,14 @@ module Rouge
         mixin :css
         rule(/%#{identifier}/) { token Name::Tag; goto :tag }
         rule /!!!#{dot}*\n/, Name::Namespace, :pop!
-        rule %r(
+        rule %r{
           (/) (\[#{dot}*?\]) (#{dot}*\n)
-        )x do
+                }x do
           groups Comment, Comment::Special, Comment
           pop!
         end
 
-        rule %r(/#{dot}*\n) do
+        rule %r{/#{dot}*\n} do
           token Comment
           pop!
           starts_block :html_comment_block
@@ -115,7 +113,7 @@ module Rouge
 
           filter_name = m[1].strip
 
-          @filter_lexer = self.filters[filter_name]
+          @filter_lexer = filters[filter_name]
           @filter_lexer.reset! unless @filter_lexer.nil?
 
           puts "    haml: filter #{filter_name.inspect} #{@filter_lexer.inspect}" if @debug

@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Shell < RegexLexer
-      title "shell"
-      desc "Various shell languages, including sh and bash"
+      title 'shell'
+      desc 'Various shell languages, including sh and bash'
 
       tag 'shell'
       aliases 'bash', 'zsh', 'ksh', 'sh'
@@ -41,7 +39,7 @@ module Rouge
 
         rule /^\S*[\$%>#] +/, Generic::Prompt
 
-        rule /(\b\w+)(=)/ do |m|
+        rule /(\b\w+)(=)/ do |_m|
           groups Name::Variable, Operator
         end
 
@@ -111,7 +109,7 @@ module Rouge
 
       state :math do
         rule /\)\)/, Keyword, :pop!
-        rule %r([-+*/%^|&]|\*\*|\|\|), Operator
+        rule %r{[-+*/%^|&]|\*\*|\|\|}, Operator
         rule /\d+/, Num
         mixin :root
       end

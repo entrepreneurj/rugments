@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*- #
 module Rouge
   module Lexers
     class Racket < RegexLexer
-      title "Racket"
-      desc "Racket is a Lisp descended from Scheme (racket-lang.org)"
+      title 'Racket'
+      desc 'Racket is a Lisp descended from Scheme (racket-lang.org)'
 
       tag 'racket'
       filenames '*.rkt', '*.rktd', '*.rktl'
@@ -12,7 +11,7 @@ module Rouge
       def self.analyze_text(text)
         text = text.strip
         return 1 if text.start_with? '#lang racket'
-        return 0.6 if text =~ %r(\A#lang [a-z/-]+$)i
+        return 0.6 if text =~ %r{\A#lang [a-z/-]+$}i
       end
 
       def self.keywords
@@ -506,7 +505,7 @@ module Rouge
         rule /"(\\\\|\\"|[^"])*"/, Str
         rule /['`]#{id}/i, Str::Symbol
         rule /#\\([()\/'"._!\$%& ?=+-]{1}|[a-z0-9]+)/i,
-          Str::Char
+             Str::Char
         rule /#t|#f/, Name::Constant
         rule /(?:'|#|`|,@|,|\.)/, Operator
 
@@ -536,7 +535,6 @@ module Rouge
 
         rule(//) { pop! }
       end
-
     end
   end
 end

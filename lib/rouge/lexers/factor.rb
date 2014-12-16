@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Factor < RegexLexer
-      title "Factor"
-      desc "Factor, the practical stack language (factorcode.org)"
+      title 'Factor'
+      desc 'Factor, the practical stack language (factorcode.org)'
       tag 'factor'
       filenames '*.factor'
       mimetypes 'text/x-factor'
@@ -230,10 +228,10 @@ module Rouge
           )
         end
 
-        rule %r(
+        rule %r{
           (INSTANCE|SLOT|MIXIN|SINGLETONS?|CONSTANT|SYMBOLS?|ERROR|SYNTAX
            |ALIEN|TYPEDEF|FUNCTION|STRUCT):
-        )x, Keyword
+                }x, Keyword
 
         rule /(?:<PRIVATE|PRIVATE>)/, Keyword::Namespace
 
@@ -261,10 +259,10 @@ module Rouge
         rule /BIN:\s+[01]+(?=\s)/, Num::Bin
         rule /OCT:\s+[0-7]+(?=\s)/, Num::Oct
 
-        rule %r([-+/*=<>^](?=\s)), Operator
+        rule %r{[-+/*=<>^](?=\s)}, Operator
 
         rule /(?:deprecated|final|foldable|flushable|inline|recursive)(?=\s)/,
-          Keyword
+             Keyword
 
         rule /\S+/ do |m|
           name = m[0]

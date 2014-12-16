@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Properties < RegexLexer
-      title ".properties"
+      title '.properties'
       desc '.properties config files for Java'
       tag 'properties'
 

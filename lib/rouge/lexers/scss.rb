@@ -1,20 +1,18 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     load_const :SassCommon, 'sass/common.rb'
 
     class Scss < SassCommon
-      title "SCSS"
-      desc "SCSS stylesheets (sass-lang.com)"
+      title 'SCSS'
+      desc 'SCSS stylesheets (sass-lang.com)'
       tag 'scss'
       filenames '*.scss'
       mimetypes 'text/x-scss'
 
       state :root do
         rule /\s+/, Text
-        rule %r(//.*?\n), Comment::Single
-        rule %r(/[*].*?[*]/)m, Comment::Multiline
+        rule %r{//.*?\n}, Comment::Single
+        rule %r{/[*].*?[*]/}m, Comment::Multiline
         rule /@import\b/, Keyword, :value
 
         mixin :content_common

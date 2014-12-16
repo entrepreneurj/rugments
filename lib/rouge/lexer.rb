@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*- #
-
-# stdlib
 require 'strscan'
 require 'cgi'
 require 'set'
@@ -16,11 +13,11 @@ module Rouge
       # new instance.
       #
       # @see #lex
-      def lex(stream, opts={}, &b)
+      def lex(stream, opts = {}, &b)
         new(opts).lex(stream, &b)
       end
 
-      def default_options(o={})
+      def default_options(o = {})
         @default_options ||= {}
         @default_options.merge!(o)
         @default_options
@@ -45,21 +42,21 @@ module Rouge
       # This is used in the Redcarpet plugin as well as Rouge's own
       # markdown lexer for highlighting internal code blocks.
       #
-      def find_fancy(str, code=nil)
+      def find_fancy(str, code = nil)
         name, opts = str ? str.split('?', 2) : [nil, '']
 
         # parse the options hash from a cgi-style string
         opts = CGI.parse(opts || '').map do |k, vals|
-          [ k.to_sym, vals.empty? ? true : vals[0] ]
+          [k.to_sym, vals.empty? ? true : vals[0]]
         end
 
         opts = Hash[opts]
 
         lexer_class = case name
         when 'guess', nil
-          self.guess(:source => code, :mimetype => opts[:mimetype])
+          guess(source: code, mimetype: opts[:mimetype])
         when String
-          self.find(name)
+          find(name)
         end
 
         lexer_class && lexer_class.new(opts)
@@ -74,7 +71,7 @@ module Rouge
       end
 
       # Specify or get this lexer's description.
-      def desc(arg=:absent)
+      def desc(arg = :absent)
         if arg == :absent
           @desc
         else
@@ -84,14 +81,14 @@ module Rouge
 
       # Specify or get the path name containing a small demo for
       # this lexer (can be overriden by {demo}).
-      def demo_file(arg=:absent)
+      def demo_file(arg = :absent)
         return @demo_file = Pathname.new(arg) unless arg == :absent
 
         @demo_file = Pathname.new(__FILE__).dirname.join('demos', tag)
       end
 
       # Specify or get a small demo string for this lexer
-      def demo(arg=:absent)
+      def demo(arg = :absent)
         return @demo = arg unless arg == :absent
 
         @demo = File.read(demo_file, encoding: 'utf-8')
@@ -107,7 +104,7 @@ module Rouge
       # This accepts the same arguments as Lexer.guess, but will never throw
       # an error.  It will return a (possibly empty) list of potential lexers
       # to use.
-      def guesses(info={})
+      def guesses(info = {})
         mimetype, filename, source = info.values_at(:mimetype, :filename, :source)
         lexers = registry.values.uniq
         total_size = lexers.size
@@ -131,7 +128,9 @@ module Rouge
 
       class AmbiguousGuess < StandardError
         attr_reader :alternatives
-        def initialize(alternatives); @alternatives = alternatives; end
+        def initialize(alternatives)
+          @alternatives = alternatives
+        end
 
         def message
           "Ambiguous guess: can't decide between #{alternatives.map(&:tag).inspect}"
@@ -151,28 +150,29 @@ module Rouge
       #
       # @see Lexer.analyze_text
       # @see Lexer.multi_guess
-      def guess(info={})
+      def guess(info = {})
         lexers = guesses(info)
 
         return Lexers::PlainText if lexers.empty?
         return lexers[0] if lexers.size == 1
 
-        raise AmbiguousGuess.new(lexers)
+        fail AmbiguousGuess.new(lexers)
       end
 
       def guess_by_mimetype(mt)
-        guess :mimetype => mt
+        guess mimetype: mt
       end
 
       def guess_by_filename(fname)
-        guess :filename => fname
+        guess filename: fname
       end
 
       def guess_by_source(source)
-        guess :source => source
+        guess source: source
       end
 
-    private
+      private
+
       def filter_by_mimetype(lexers, mt)
         filtered = lexers.select { |lexer| lexer.mimetypes.include? mt }
         filtered.any? ? filtered : lexers
@@ -210,14 +210,14 @@ module Rouge
         out.any? ? out : lexers
       end
 
-      def best_by_source(lexers, source, threshold=0)
+      def best_by_source(lexers, source, threshold = 0)
         source = case source
         when String
           source
-        when ->(s){ s.respond_to? :read }
+        when ->(s) { s.respond_to? :read }
           source.read
         else
-          raise 'invalid source'
+          fail 'invalid source'
         end
 
         assert_utf8!(source)
@@ -239,13 +239,15 @@ module Rouge
         best_match
       end
 
-    protected
+      protected
+
       # @private
       def register(name, lexer)
         registry[name.to_s] = lexer
       end
 
-    public
+      public
+
       # Used to specify or get the canonical name of this lexer class.
       #
       # @example
@@ -256,7 +258,7 @@ module Rouge
       #   MyLexer.tag # => 'foo'
       #
       #   Lexer.find('foo') # => MyLexer
-      def tag(t=nil)
+      def tag(t = nil)
         return @tag if t.nil?
 
         @tag = t.to_s
@@ -301,13 +303,14 @@ module Rouge
       # @private
       def assert_utf8!(str)
         return if %w(US-ASCII UTF-8 ASCII-8BIT).include? str.encoding.name
-        raise EncodingError.new(
-          "Bad encoding: #{str.encoding.names.join(',')}. " +
-          "Please convert your string to UTF-8."
+        fail EncodingError.new(
+          "Bad encoding: #{str.encoding.names.join(',')}. " \
+          'Please convert your string to UTF-8.'
         )
       end
 
-    private
+      private
+
       def registry
         @registry ||= {}
       end
@@ -324,25 +327,25 @@ module Rouge
     #   on the lexer in question.  In regex lexers, this will log the
     #   state stack at the beginning of each step, along with each regex
     #   tried and each stream consumed.  Try it, it's pretty useful.
-    def initialize(opts={})
+    def initialize(opts = {})
       options(opts)
 
       @debug = option(:debug)
     end
 
     # get and/or specify the options for this lexer.
-    def options(o={})
+    def options(o = {})
       (@options ||= {}).merge!(o)
 
       self.class.default_options.merge(@options)
     end
 
     # get or specify one option for this lexer
-    def option(k, v=:absent)
+    def option(k, v = :absent)
       if v == :absent
         options[k]
       else
-        options({ k => v })
+        options(k => v)
       end
     end
 
@@ -359,7 +362,7 @@ module Rouge
     # @example
     #   debug { "hello, world!" } if @debug
     def debug
-      warn "Lexer#debug is deprecated.  Simply puts if @debug instead."
+      warn 'Lexer#debug is deprecated.  Simply puts if @debug instead.'
       puts yield if @debug
     end
 
@@ -375,7 +378,7 @@ module Rouge
     #
     # @option opts :continue
     #   Continue the lex from the previous state (i.e. don't call #reset!)
-    def lex(string, opts={}, &b)
+    def lex(string, opts = {}, &b)
       return enum_for(:lex, string) unless block_given?
 
       Lexer.assert_utf8!(string)
@@ -413,8 +416,8 @@ module Rouge
     #
     # @param [StringScanner] stream
     #   the stream
-    def stream_tokens(stream, &b)
-      raise 'abstract'
+    def stream_tokens(_stream, &_b)
+      fail 'abstract'
     end
 
     # @abstract
@@ -427,7 +430,7 @@ module Rouge
     # @param [TextAnalyzer] text
     #   the text to be analyzed, with a couple of handy methods on it,
     #   like {TextAnalyzer#shebang?} and {TextAnalyzer#doctype?}
-    def self.analyze_text(text)
+    def self.analyze_text(_text)
       0
     end
   end

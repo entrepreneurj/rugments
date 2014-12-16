@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Puppet < RegexLexer
-      title "Puppet"
+      title 'Puppet'
       desc 'The Puppet configuration management language (puppetlabs.org)'
       tag 'puppet'
       aliases 'pp'
@@ -67,7 +65,7 @@ module Rouge
         rule /(in|and|or)\b/, Operator::Word
         rule /[=!<>]=/, Operator
         rule /[=!]~/, Operator, :regex_allowed
-        rule %r([<>!+*/-]), Operator
+        rule %r{[<>!+*/-]}, Operator
 
         rule /(class|include)(\s*)(#{qualname})/ do
           groups Keyword, Text, Name::Class
@@ -95,13 +93,13 @@ module Rouge
 
       state :regex_allowed do
         mixin :whitespace
-        rule %r(/), Str::Regex, :regex
+        rule %r{/}, Str::Regex, :regex
 
         rule(//) { pop! }
       end
 
       state :regex do
-        rule %r(/), Str::Regex, :pop!
+        rule %r{/}, Str::Regex, :pop!
         rule /\\./, Str::Escape
         rule /[(){}]/, Str::Interpol
         rule /\[/, Str::Interpol, :regex_class

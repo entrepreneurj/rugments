@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Coffeescript < RegexLexer
@@ -8,7 +6,7 @@ module Rouge
       filenames '*.coffee', 'Cakefile'
       mimetypes 'text/coffeescript'
 
-      title "CoffeeScript"
+      title 'CoffeeScript'
       desc 'The Coffeescript programming language (coffeescript.org)'
 
       def self.analyze_text(text)
@@ -52,33 +50,33 @@ module Rouge
         mixin :has_interpolation
         mixin :comments_and_whitespace
 
-        rule %r(///([gim]+\b|\B)), Str::Regex, :pop!
-        rule %r(/), Str::Regex
-        rule %r([^/#]+), Str::Regex
+        rule %r{///([gim]+\b|\B)}, Str::Regex, :pop!
+        rule %r{/}, Str::Regex
+        rule %r{[^/#]+}, Str::Regex
       end
 
       state :slash_starts_regex do
         mixin :comments_and_whitespace
-        rule %r(///) do
+        rule %r{///} do
           token Str::Regex
           goto :multiline_regex
         end
 
-        rule %r(
+        rule %r{
           /(\\.|[^\[/\\\n]|\[(\\.|[^\]\\\n])*\])+/ # a regex
           ([gim]+\b|\B)
-        )x, Str::Regex, :pop!
+                }x, Str::Regex, :pop!
 
         rule(//) { pop! }
       end
 
       state :root do
-        rule(%r(^(?=\s|/|<!--))) { push :slash_starts_regex }
+        rule(%r{^(?=\s|/|<!--)}) { push :slash_starts_regex }
         mixin :comments_and_whitespace
-        rule %r(
+        rule %r{
           [+][+]|--|~|&&|\band\b|\bor\b|\bis\b|\bisnt\b|\bnot\b|[?]|:|=|
           [|][|]|\\(?=\n)|(<<|>>>?|==?|!=?|[-<>+*`%&|^/])=?
-        )x, Operator, :slash_starts_regex
+                }x, Operator, :slash_starts_regex
 
         rule /[-=]>/, Name::Function
 

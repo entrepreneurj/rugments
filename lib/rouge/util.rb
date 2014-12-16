@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   class InheritableHash < Hash
-    def initialize(parent=nil)
+    def initialize(parent = nil)
       @parent = parent
     end
 
@@ -18,7 +16,7 @@ module Rouge
     end
 
     def include?(k)
-      super or parent.include?(k)
+      super || parent.include?(k)
     end
 
     def each(&b)
@@ -27,7 +25,7 @@ module Rouge
       end
     end
 
-    alias own_keys keys
+    alias_method :own_keys, :keys
     def keys
       keys = own_keys.concat(parent.keys)
       keys.uniq!
@@ -38,7 +36,7 @@ module Rouge
   class InheritableList
     include Enumerable
 
-    def initialize(parent=nil)
+    def initialize(parent = nil)
       @parent = parent
     end
 
@@ -60,7 +58,7 @@ module Rouge
     def push(o)
       own_entries << o
     end
-    alias << push
+    alias_method :<<, :push
   end
 
   # shared methods for some indentation-sensitive lexers
@@ -87,10 +85,10 @@ module Rouge
       # if it's an indent and we know where to go next,
       # push that state.  otherwise, push content and
       # clear the block state.
-      if (@block_state &&
-          indent_str.start_with?(@block_indentation) &&
-          indent_str != @block_indentation
-      )
+      if @block_state &&
+         indent_str.start_with?(@block_indentation) &&
+         indent_str != @block_indentation
+
         push @block_state
       else
         @block_state = @block_indentation = nil

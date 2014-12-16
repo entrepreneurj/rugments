@@ -1,16 +1,14 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Handlebars < TemplateLexer
-      title "Handlebars"
+      title 'Handlebars'
       desc 'the Handlebars and Mustache templating languages'
       tag 'handlebars'
       aliases 'hbs', 'mustache'
       filenames '*.handlebars', '*.hbs', '*.mustache'
       mimetypes 'text/x-handlebars', 'text/x-mustache'
 
-      id = %r([\w$-]+)
+      id = %r{[\w$-]+}
 
       state :root do
         # escaped slashes
@@ -47,7 +45,7 @@ module Rouge
         rule /[\[\]]/, Punctuation
         rule /[.](?=[}\s])/, Name::Variable
         rule /[.][.]/, Name::Variable
-        rule %r([/.]), Punctuation
+        rule %r{[/.]}, Punctuation
         rule /"(\\.|.)*?"/, Str::Double
         rule /'(\\.|.)*?'/, Str::Single
         rule /\d+(?=}\s)/, Num
@@ -59,7 +57,7 @@ module Rouge
       end
 
       state :open_sym do
-        rule %r([#/]) do
+        rule %r{[#/]} do
           token Keyword
           goto :block_name
         end

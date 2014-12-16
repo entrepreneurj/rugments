@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class CSharp < RegexLexer
@@ -8,7 +6,7 @@ module Rouge
       filenames '*.cs'
       mimetypes 'text/x-csharp'
 
-      title "C#"
+      title 'C#'
       desc 'a multi-paradigm language targeting .NET'
 
       # TODO: support more of unicode
@@ -36,8 +34,8 @@ module Rouge
 
       state :whitespace do
         rule /\s+/m, Text
-        rule %r(//.*?\n), Comment::Single
-        rule %r(/[*].*?[*]/)m, Comment::Multiline
+        rule %r{//.*?\n}, Comment::Single
+        rule %r{/[*].*?[*]/}m, Comment::Multiline
       end
 
       state :root do
@@ -56,14 +54,14 @@ module Rouge
         rule /"(\\.|.)*?["\n]/, Str
         rule /'(\\.|.)'/, Str::Char
         rule /0x[0-9a-f]+[lu]?/i, Num
-        rule %r(
+        rule %r{
           [0-9]
           ([.][0-9]*)? # decimal
           (e[+-][0-9]+)? # exponent
           [fldu]? # type
-        )ix, Num
+                }ix, Num
         rule /^#[ \t]*(#{cpp_keywords.join('|')})\b.*?\n/,
-          Comment::Preproc
+             Comment::Preproc
         rule /\b(#{keywords.join('|')})\b/, Keyword
         rule /\b(#{keywords_type.join('|')})\b/, Keyword::Type
         rule /class|struct/, Keyword, :class
@@ -82,7 +80,6 @@ module Rouge
         rule /(?=[(])/, Text, :pop!
         rule /(#{id}|[.])+/, Name::Namespace, :pop!
       end
-
     end
   end
 end

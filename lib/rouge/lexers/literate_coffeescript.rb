@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class LiterateCoffeescript < RegexLexer
       tag 'literate_coffeescript'
-      title "Literate CoffeeScript"
+      title 'Literate CoffeeScript'
       desc 'Literate coffeescript'
       aliases 'litcoffee'
       filenames '*.litcoffee'

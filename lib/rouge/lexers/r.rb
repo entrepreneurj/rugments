@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class R < RegexLexer
-      title "R"
+      title 'R'
       desc 'The R statistics language (r-project.org)'
       tag 'r'
       aliases 'r', 'R', 's', 'S'
@@ -40,16 +38,16 @@ module Rouge
 
         rule /\b(NULL|Inf|TRUE|FALSE|NaN)\b/, Keyword::Constant
         rule /\bNA(_(integer|real|complex|character)_)?\b/,
-          Keyword::Constant
+             Keyword::Constant
         rule /\b[TF]\b/, Keyword::Variable
 
         rule /0[xX][a-fA-F0-9]+([pP][0-9]+)?[Li]?/, Num::Hex
         rule /[+-]?(\d+([.]\d+)?|[.]\d+)([eE][+-]?\d+)?[Li]?/,
-          Num
+             Num
 
         rule /[\[\]{}();,]/, Punctuation
 
-        rule %r([-<>?*+^/!=~$@:%&|]), Operator
+        rule %r{[-<>?*+^/!=~$@:%&|]}, Operator
         rule /[.][.][.]/, Keyword
       end
     end

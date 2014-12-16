@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Go < RegexLexer
-      title "Go"
+      title 'Go'
       desc 'The Go programming language (http://golang.org)'
       tag 'go'
       aliases 'go', 'golang'
@@ -11,8 +9,8 @@ module Rouge
 
       mimetypes 'text/x-go', 'application/x-go'
 
-      def self.analyze_text(text)
-        return 0
+      def self.analyze_text(_text)
+        0
       end
 
       # Characters
@@ -128,7 +126,7 @@ module Rouge
                                | rune       | string     | uint8
                                | uint16     | uint32     | uint64
                                | uintptr    | uint
-      	                       )\b/x
+                               )\b/x
 
       PREDECLARED_CONSTANTS  = /\b(?:true|false|iota|nil)\b/
 

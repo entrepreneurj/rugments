@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class CSS < RegexLexer
-      title "CSS"
-      desc "Cascading Style Sheets, used to style web pages"
+      title 'CSS'
+      desc 'Cascading Style Sheets, used to style web pages'
 
       tag 'css'
       filenames '*.css'
@@ -190,7 +188,7 @@ module Rouge
         rule /##{identifier}/, Name::Function
         rule /@#{identifier}/, Keyword, :at_rule
         rule identifier, Name::Tag
-        rule %r([~^*!%&\[\]()<>|+=@:;,./?-]), Operator
+        rule %r{[~^*!%&\[\]()<>|+=@:;,./?-]}, Operator
       end
 
       state :value do
@@ -238,7 +236,7 @@ module Rouge
 
       state :basics do
         rule /\s+/m, Text
-        rule %r(/\*(?:.*?)\*/)m, Comment
+        rule %r{/\*(?:.*?)\*/}m, Comment
       end
 
       state :stanza do
@@ -246,11 +244,11 @@ module Rouge
         rule /}/, Punctuation, :pop!
         rule /(#{identifier})(\s*)(:)/m do |m|
           name_tok = if self.class.attributes.include? m[1]
-            Name::Label
-          elsif self.class.vendor_prefixes.any? { |p| m[1].start_with?(p) }
-            Name::Label
-          else
-            Name::Property
+                       Name::Label
+                     elsif self.class.vendor_prefixes.any? { |p| m[1].start_with?(p) }
+                       Name::Label
+                     else
+                       Name::Property
           end
 
           groups name_tok, Text, Punctuation

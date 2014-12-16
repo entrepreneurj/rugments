@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Diff < RegexLexer
-      title "diff"
-      desc "Lexes unified diffs or patches"
+      title 'diff'
+      desc 'Lexes unified diffs or patches'
 
       tag 'diff'
       aliases 'patch', 'udiff'

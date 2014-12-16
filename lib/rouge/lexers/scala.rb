@@ -1,10 +1,8 @@
-# -*- coding: utf-8 #
-
 module Rouge
   module Lexers
     class Scala < RegexLexer
-      title "Scala"
-      desc "The Scala programming language (scala-lang.org)"
+      title 'Scala'
+      desc 'The Scala programming language (scala-lang.org)'
       tag 'scala'
       aliases 'scala'
       filenames '*.scala', '*.sbt'
@@ -18,7 +16,7 @@ module Rouge
       upper = /[\p{Lu}$_]/
       digits = /[0-9]/
       parens = /[(){}\[\]]/
-      delims = %r([‘’".;,])
+      delims = %r{[‘’".;,]}
 
       # negative lookahead to filter out other classes
       op = %r(
@@ -26,7 +24,7 @@ module Rouge
         [\u0020-\u007F\p{Sm}\p{So}]
       )x
 
-      idrest = %r(#{letter}(?:#{letter}|#{digits})*(?:(?<=_)#{op}+)?)x
+      idrest = %r{#{letter}(?:#{letter}|#{digits})*(?:(?<=_)#{op}+)?}x
 
       keywords = %w(
         abstract case catch def do else extends final finally for forSome
@@ -42,14 +40,14 @@ module Rouge
         rule /'#{idrest}[^']/, Str::Symbol
         rule /[^\S\n]+/, Text
 
-        rule %r(//.*?\n), Comment::Single
-        rule %r(/\*), Comment::Multiline, :comment
+        rule %r{//.*?\n}, Comment::Single
+        rule %r{/\*}, Comment::Multiline, :comment
 
         rule /@#{idrest}/, Name::Decorator
-        rule %r(
+        rule %r{
           (#{keywords.join("|")})\b|
           (<[%:-]|=>|>:|[#=@_\u21D2\u2190])(\b|(?=\s)|$)
-        )x, Keyword
+                }x, Keyword
         rule /:(?!#{op})/, Keyword, :type
         rule /#{upper}#{idrest}\b/, Name::Class
         rule /(true|false|null)\b/, Keyword::Constant
@@ -90,8 +88,8 @@ module Rouge
         rule /\s+/, Text
         rule /{/, Operator, :pop!
         rule /\(/, Operator, :pop!
-        rule %r(//.*?\n), Comment::Single, :pop!
-        rule %r(#{idrest}|#{op}+|`[^`]+`), Name::Class, :pop!
+        rule %r{//.*?\n}, Comment::Single, :pop!
+        rule %r{#{idrest}|#{op}+|`[^`]+`}, Name::Class, :pop!
       end
 
       state :type do
@@ -115,7 +113,7 @@ module Rouge
           pop!
         end
 
-        rule %r(//.*?\n), Comment::Single, :pop!
+        rule %r{//.*?\n}, Comment::Single, :pop!
         rule /\.|#{idrest}|#{op}+|`[^`]+`/, Keyword::Type
       end
 
@@ -128,14 +126,14 @@ module Rouge
       end
 
       state :comment do
-        rule %r([^/\*]+), Comment::Multiline
-        rule %r(/\*), Comment::Multiline, :comment
-        rule %r(\*/), Comment::Multiline, :pop!
-        rule %r([*/]), Comment::Multiline
+        rule %r{[^/\*]+}, Comment::Multiline
+        rule %r{/\*}, Comment::Multiline, :comment
+        rule %r{\*/}, Comment::Multiline, :pop!
+        rule %r{[*/]}, Comment::Multiline
       end
 
       state :import do
-        rule %r((#{idrest}|\.)+), Name::Namespace, :pop!
+        rule %r{(#{idrest}|\.)+}, Name::Namespace, :pop!
       end
     end
   end

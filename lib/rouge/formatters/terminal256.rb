@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Formatters
     # A formatter for 256-color terminals
@@ -9,15 +7,14 @@ module Rouge
       # @private
       attr_reader :theme
 
-
       # @option opts :theme
       #   (default is thankful_eyes) the theme to render with.
-      def initialize(opts={})
+      def initialize(opts = {})
         @theme = opts[:theme] || 'thankful_eyes'
         @theme = Theme.find(@theme) if @theme.is_a? String
       end
 
-      def stream(tokens, &b)
+      def stream(tokens, &_b)
         tokens.each do |tok, val|
           escape = escape_sequence(tok)
           yield escape.style_string
@@ -103,7 +100,8 @@ module Rouge
           end
         end
 
-      private
+        private
+
         def escape(attrs)
           return '' if attrs.empty?
           "\e[#{attrs.join(';')}m"
@@ -115,14 +113,14 @@ module Rouge
         end
 
         def self.get_rgb(color)
-          color = $1 if color =~ /#([0-9a-f]+)/i
+          color = Regexp.last_match[1] if color =~ /#([0-9a-f]+)/i
           hexes = case color.size
           when 3
             color.chars.map { |c| "#{c}#{c}" }
           when 6
             color.scan(/../)
           else
-            raise "invalid color: #{color}"
+            fail "invalid color: #{color}"
           end
 
           hexes.map { |h| h.to_i(16) }
@@ -152,7 +150,7 @@ module Rouge
         end
       end
 
-    # private
+      # private
       def escape_sequence(token)
         @escape_sequences ||= {}
         @escape_sequences[token.name] ||=

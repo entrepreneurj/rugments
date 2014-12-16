@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Java < RegexLexer
-      title "Java"
-      desc "The Java programming language (java.com)"
+      title 'Java'
+      desc 'The Java programming language (java.com)'
 
       tag 'java'
       filenames '*.java'
@@ -25,11 +23,11 @@ module Rouge
       id = /[a-zA-Z_][a-zA-Z0-9_]*/
 
       state :root do
-        rule %r(^
+        rule %r{^
           (\s*(?:[a-zA-Z_][a-zA-Z0-9_.\[\]]*\s+)+?) # return arguments
           ([a-zA-Z_][a-zA-Z0-9_]*)                  # method name
           (\s*)(\()                                 # signature start
-        )mx do |m|
+                }mx do |m|
           # TODO: do this better, this shouldn't need a delegation
           delegate Java, m[1]
           token Name::Function, m[2]
@@ -38,8 +36,8 @@ module Rouge
         end
 
         rule /\s+/, Text
-        rule %r(//.*?$), Comment::Single
-        rule %r(/\*.*?\*/)m, Comment::Multiline
+        rule %r{//.*?$}, Comment::Single
+        rule %r{/\*.*?\*/}m, Comment::Multiline
         rule /@#{id}/, Name::Decorator
         rule /(?:#{keywords.join('|')})\b/, Keyword
         rule /(?:#{declarations.join('|')})\b/, Keyword::Declaration

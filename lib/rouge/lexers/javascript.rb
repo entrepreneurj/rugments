@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Javascript < RegexLexer
-      title "JavaScript"
-      desc "JavaScript, the browser scripting language"
+      title 'JavaScript'
+      desc 'JavaScript, the browser scripting language'
 
       tag 'javascript'
       aliases 'js'
@@ -21,14 +19,14 @@ module Rouge
       state :comments_and_whitespace do
         rule /\s+/, Text
         rule /<!--/, Comment # really...?
-        rule %r(//.*?$), Comment::Single
-        rule %r(/\*.*?\*/)m, Comment::Multiline
+        rule %r{//.*?$}, Comment::Single
+        rule %r{/\*.*?\*/}m, Comment::Multiline
       end
 
       state :expr_start do
         mixin :comments_and_whitespace
 
-        rule %r(/) do
+        rule %r{/} do
           token Str::Regex
           goto :regex
         end
@@ -39,12 +37,12 @@ module Rouge
       end
 
       state :regex do
-        rule %r(/) do
+        rule %r{/} do
           token Str::Regex
           goto :regex_end
         end
 
-        rule %r([^/]\n), Error, :pop!
+        rule %r{[^/]\n}, Error, :pop!
 
         rule /\n/, Error, :pop!
         rule /\[\^/, Str::Escape, :regex_group
@@ -66,7 +64,7 @@ module Rouge
         # close the regex
         rule /\//, Str::Escape
 
-        rule %r([^/]\n) do
+        rule %r{[^/]\n} do
           token Error
           pop! 2
         end
@@ -120,12 +118,12 @@ module Rouge
       state :root do
         rule /\A\s*#!.*?\n/m, Comment::Preproc, :statement
         rule /\n/, Text, :statement
-        rule %r((?<=\n)(?=\s|/|<!--)), Text, :expr_start
+        rule %r{(?<=\n)(?=\s|/|<!--)}, Text, :expr_start
         mixin :comments_and_whitespace
-        rule %r(\+\+ | -- | ~ | && | \|\| | \\(?=\n) | << | >>>? | ===
-               | !== )x,
-          Operator, :expr_start
-        rule %r([-<>+*%&|\^/!=]=?), Operator, :expr_start
+        rule %r{\+\+ | -- | ~ | && | \|\| | \\(?=\n) | << | >>>? | ===
+               | !== }x,
+             Operator, :expr_start
+        rule %r{[-<>+*%&|\^/!=]=?}, Operator, :expr_start
         rule /[(\[,]/, Punctuation, :expr_start
         rule /;/, Punctuation, :statement
         rule /[)\].]/, Punctuation
@@ -203,7 +201,7 @@ module Rouge
     end
 
     class JSON < RegexLexer
-      desc "JavaScript Object Notation (json.org)"
+      desc 'JavaScript Object Notation (json.org)'
       tag 'json'
       filenames '*.json'
       mimetypes 'application/json'

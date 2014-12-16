@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     # A lexer for the Slim tempalte language
@@ -7,7 +5,7 @@ module Rouge
     class Slim < RegexLexer
       include Indentation
 
-      title "Slim"
+      title 'Slim'
       desc 'The Slim template language'
 
       tag 'slim'
@@ -69,14 +67,14 @@ module Rouge
 
           filter_name = m[1].strip
 
-          @filter_lexer = self.filters[filter_name]
+          @filter_lexer = filters[filter_name]
           @filter_lexer.reset! unless @filter_lexer.nil?
 
           puts "    slim: filter #{filter_name.inspect} #{@filter_lexer.inspect}" if @debug
         end
 
         # Text
-        rule %r([\|'](?=\s)) do
+        rule %r{[\|'](?=\s)} do
           token Punctuation
           pop!
           starts_block :plain_block
@@ -98,15 +96,14 @@ module Rouge
           push :tag
         end
 
-        #rule /<\w+(?=.*>)/, Keyword::Constant, :tag # Maybe do this, look ahead and stuff
-        rule %r((</?[\w\s\=\'\"]+?/?>)) do |m| # Dirty html
+        # rule /<\w+(?=.*>)/, Keyword::Constant, :tag # Maybe do this, look ahead and stuff
+        rule %r{(</?[\w\s\=\'\"]+?/?>)} do |m| # Dirty html
           delegate html, m[1]
           pop!
         end
 
         # Ordinary slim tags
         rule /\w+/, Name::Tag, :tag
-
       end
 
       state :tag do
@@ -142,7 +139,7 @@ module Rouge
         # Ruby value
         rule /(\=)(#{dot}+)/ do |m|
           token Punctuation, m[1]
-          #token Keyword::Constant, m[2]
+          # token Keyword::Constant, m[2]
           delegate ruby, m[2]
         end
 
@@ -158,7 +155,7 @@ module Rouge
 
       state :html_attr do
         # Strings, double/single quoted
-        rule %r(\s*(['"])#{dot}*\1), Literal::String, :pop!
+        rule %r{\s*(['"])#{dot}*\1}, Literal::String, :pop!
 
         # Ruby stuff
         rule(/(#{ruby_chars}+\(.*?\))/) { |m| delegate ruby, m[1]; pop! }
@@ -192,11 +189,11 @@ module Rouge
       state :plain_block do
         mixin :interpolation
 
-        rule %r((</?[\w\s\=\'\"]+?/?>)) do |m| # Dirty html
+        rule %r{(</?[\w\s\=\'\"]+?/?>)} do |m| # Dirty html
           delegate html, m[1]
         end
 
-        #rule /([^#\n]|#[^{\n]|(\\\\)*\\#\{)+/ do
+        # rule /([^#\n]|#[^{\n]|(\\\\)*\\#\{)+/ do
         rule /#{dot}+?/, Text
 
         mixin :indented_block

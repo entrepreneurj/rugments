@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     # shared states with SCSS
@@ -52,8 +50,8 @@ module Rouge
 
         rule /[~^*!&%<>\|+=@:,.\/?-]+/, Operator
         rule /[\[\]()]+/, Punctuation
-        rule %r(/[*]), Comment::Multiline, :inline_comment
-        rule %r(//[^\n]*), Comment::Single
+        rule %r{/[*]}, Comment::Multiline, :inline_comment
+        rule %r{//[^\n]*}, Comment::Single
 
         # identifiers
         rule(id) do |m|
@@ -167,7 +165,7 @@ module Rouge
       state :inline_comment do
         rule /(\\#|#(?=[^\n{])|\*(?=[^\n\/])|[^\n#*])+/, Comment::Multiline
         mixin :has_interp
-        rule %r([*]/), Comment::Multiline, :pop!
+        rule %r{[*]/}, Comment::Multiline, :pop!
       end
     end
   end

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   # @abstract
   # A stateful lexer that uses sets of regular expressions to
@@ -16,7 +14,7 @@ module Rouge
       def initialize(re, callback)
         @re = re
         @callback = callback
-        @beginning_of_line = re.source[0] == ?^
+        @beginning_of_line = re.source[0] == '^'
       end
 
       def inspect
@@ -72,7 +70,8 @@ module Rouge
         end
       end
 
-    protected
+      protected
+
       # Define a new rule for this state.
       #
       # @overload rule(re, token, next_state=nil)
@@ -92,9 +91,9 @@ module Rouge
       #   methods, including {RegexLexer#push}, {RegexLexer#pop!},
       #   {RegexLexer#token}, and {RegexLexer#delegate}.  The first
       #   argument can be used to access the match groups.
-      def rule(re, tok=nil, next_state=nil, &callback)
+      def rule(re, tok = nil, next_state = nil, &callback)
         if tok.nil? && callback.nil?
-          raise "please pass `rule` a token to yield or a callback"
+          fail 'please pass `rule` a token to yield or a callback'
         end
 
         callback ||= case next_state
@@ -103,7 +102,7 @@ module Rouge
             puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
             @output_stream.call(tok, stream[0])
             puts "    popping stack: #{1}" if @debug
-            @stack.pop or raise 'empty stack!'
+            @stack.pop || fail('empty stack!')
           end
         when :push
           proc do |stream|
@@ -126,7 +125,7 @@ module Rouge
             @output_stream.call(tok, stream[0])
           end
         else
-          raise "invalid next state: #{next_state.inspect}"
+          fail "invalid next state: #{next_state.inspect}"
         end
 
         rules << Rule.new(re, callback)
@@ -139,7 +138,8 @@ module Rouge
         rules << state.to_s
       end
 
-    private
+      private
+
       def load!
         return if @loaded
         @loaded = true
@@ -187,13 +187,13 @@ module Rouge
 
     def self.prepend(name, &b)
       name = name.to_s
-      dsl = state_definitions[name] or raise "no such state #{name.inspect}"
+      dsl = state_definitions[name] or fail "no such state #{name.inspect}"
       replace_state(name, dsl.prepended(&b))
     end
 
-    def self.append(state, &b)
+    def self.append(_state, &b)
       name = name.to_s
-      dsl = state_definitions[name] or raise "no such state #{name.inspect}"
+      dsl = state_definitions[name] or fail "no such state #{name.inspect}"
       replace_state(name, dsl.appended(&b))
     end
 
@@ -202,7 +202,7 @@ module Rouge
       return name if name.is_a? State
 
       states[name.to_sym] ||= begin
-        defn = state_definitions[name.to_s] or raise "unknown state: #{name.inspect}"
+        defn = state_definitions[name.to_s] or fail "unknown state: #{name.inspect}"
         defn.to_state(self)
       end
     end
@@ -224,7 +224,7 @@ module Rouge
     # NB: if the state stack is empty, this will throw an error rather
     # than returning nil.
     def state
-      stack.last or raise 'empty stack!'
+      stack.last || fail('empty stack!')
     end
 
     # reset this lexer to its initial state.  This runs all of the
@@ -267,8 +267,8 @@ module Rouge
 
         success = step(state, stream)
 
-        if !success
-          puts "    no match, yielding Error" if @debug
+        unless success
+          puts '    no match, yielding Error' if @debug
           b.call(Token::Tokens::Error, stream.getch)
         end
       end
@@ -307,7 +307,7 @@ module Rouge
             if size.zero?
               @null_steps += 1
               if @null_steps > MAX_NULL_SCANS
-                puts "    too many scans without consuming the string!" if @debug
+                puts '    too many scans without consuming the string!' if @debug
                 return false
               end
             else
@@ -329,7 +329,7 @@ module Rouge
     # @param val
     #   (optional) the string value to yield.  If absent, this defaults
     #   to the entire last match.
-    def token(tok, val=@current_stream[0])
+    def token(tok, val = @current_stream[0])
       yield_token(tok, val)
     end
 
@@ -337,15 +337,15 @@ module Rouge
     #
     # Yield a token with the next matched group.  Subsequent calls
     # to this method will yield subsequent groups.
-    def group(tok)
-      raise "RegexLexer#group is deprecated: use #groups instead"
+    def group(_tok)
+      fail 'RegexLexer#group is deprecated: use #groups instead'
     end
 
     # Yield tokens corresponding to the matched groups of the current
     # match.
     def groups(*tokens)
       tokens.each_with_index do |tok, i|
-        yield_token(tok, @current_stream[i+1])
+        yield_token(tok, @current_stream[i + 1])
       end
     end
 
@@ -358,31 +358,31 @@ module Rouge
     #   The lexer or lexer class to delegate to
     # @param [String] text
     #   The text to delegate.  This defaults to the last matched string.
-    def delegate(lexer, text=nil)
+    def delegate(lexer, text = nil)
       puts "    delegating to #{lexer.inspect}" if @debug
       text ||= @current_stream[0]
 
-      lexer.lex(text, :continue => true) do |tok, val|
+      lexer.lex(text, continue: true) do |tok, val|
         puts "    delegated token: #{tok.inspect}, #{val.inspect}" if @debug
         yield_token(tok, val)
       end
     end
 
-    def recurse(text=nil)
+    def recurse(text = nil)
       delegate(self.class, text)
     end
 
     # Push a state onto the stack.  If no state name is given and you've
     # passed a block, a state will be dynamically created using the
     # {StateDSL}.
-    def push(state_name=nil, &b)
+    def push(state_name = nil, &b)
       push_state = if state_name
-        get_state(state_name)
-      elsif block_given?
-        StateDSL.new(b.inspect, &b).to_state(self.class)
-      else
-        # use the top of the stack by default
-        self.state
+                     get_state(state_name)
+                   elsif block_given?
+                     StateDSL.new(b.inspect, &b).to_state(self.class)
+                   else
+                     # use the top of the stack by default
+                     state
       end
 
       puts "    pushing #{push_state.name}" if @debug
@@ -391,8 +391,8 @@ module Rouge
 
     # Pop the state stack.  If a number is passed in, it will be popped
     # that number of times.
-    def pop!(times=1)
-      raise 'empty stack!' if stack.empty?
+    def pop!(times = 1)
+      fail 'empty stack!' if stack.empty?
 
       puts "    popping stack: #{times}" if @debug
 
@@ -403,7 +403,7 @@ module Rouge
 
     # replace the head of the stack with the given state
     def goto(state_name)
-      raise 'empty stack!' if stack.empty?
+      fail 'empty stack!' if stack.empty?
 
       puts "    going to state #{state_name} " if @debug
       stack[-1] = get_state(state_name)
@@ -429,7 +429,8 @@ module Rouge
       state_name.to_s == state.name
     end
 
-  private
+    private
+
     def yield_token(tok, val)
       return if val.nil? || val.empty?
       puts "    yielding #{tok.qualname}, #{val.inspect}" if @debug

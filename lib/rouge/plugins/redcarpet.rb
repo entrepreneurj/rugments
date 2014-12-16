@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 # this file is not require'd from the root.  To use this plugin, run:
 #
 #    require 'rouge/plugins/redcarpet'
@@ -23,7 +21,7 @@ module Rouge
 
       # override this method for custom formatting behavior
       def rouge_formatter(lexer)
-        Formatters::HTML.new(:css_class => "highlight #{lexer.tag}")
+        Formatters::HTML.new(css_class: "highlight #{lexer.tag}")
       end
     end
   end

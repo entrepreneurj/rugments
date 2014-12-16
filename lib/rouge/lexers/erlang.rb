@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Erlang < RegexLexer
-      title "Erlang"
-      desc "The Erlang programming language (erlang.org)"
+      title 'Erlang'
+      desc 'The Erlang programming language (erlang.org)'
       tag 'erlang'
       aliases 'erl'
       filenames '*.erl', '*.hrl'

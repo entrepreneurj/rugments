@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Perl < RegexLexer
-      title "Perl"
-      desc "The Perl scripting language (perl.org)"
+      title 'Perl'
+      desc 'The Perl scripting language (perl.org)'
 
       tag 'perl'
       aliases 'pl'
@@ -52,16 +50,16 @@ module Rouge
       re_tok = Str::Regex
 
       state :balanced_regex do
-        rule %r(/(\\\\|\\/|[^/])*/[egimosx]*)m, re_tok, :pop!
-        rule %r(!(\\\\|\\!|[^!])*![egimosx]*)m, re_tok, :pop!
-        rule %r(\\(\\\\|[^\\])*\\[egimosx]*)m, re_tok, :pop!
+        rule %r{/(\\\\|\\/|[^/])*/[egimosx]*}m, re_tok, :pop!
+        rule %r{!(\\\\|\\!|[^!])*![egimosx]*}m, re_tok, :pop!
+        rule %r{\\(\\\\|[^\\])*\\[egimosx]*}m, re_tok, :pop!
         rule %r({(\\\\|\\}|[^}])*}[egimosx]*), re_tok, :pop!
-        rule %r(<(\\\\|\\>|[^>])*>[egimosx]*), re_tok, :pop!
-        rule %r(\[(\\\\|\\\]|[^\]])*\][egimosx]*), re_tok, :pop!
-        rule %r[\((\\\\|\\\)|[^\)])*\)[egimosx]*], re_tok, :pop!
-        rule %r(@(\\\\|\\\@|[^\@])*@[egimosx]*), re_tok, :pop!
-        rule %r(%(\\\\|\\\%|[^\%])*%[egimosx]*), re_tok, :pop!
-        rule %r(\$(\\\\|\\\$|[^\$])*\$[egimosx]*), re_tok, :pop!
+        rule %r{<(\\\\|\\>|[^>])*>[egimosx]*}, re_tok, :pop!
+        rule %r{\[(\\\\|\\\]|[^\]])*\][egimosx]*}, re_tok, :pop!
+        rule %r{\((\\\\|\\\)|[^\)])*\)[egimosx]*}, re_tok, :pop!
+        rule %r{@(\\\\|\\\@|[^\@])*@[egimosx]*}, re_tok, :pop!
+        rule %r{%(\\\\|\\\%|[^\%])*%[egimosx]*}, re_tok, :pop!
+        rule %r{\$(\\\\|\\\$|[^\$])*\$[egimosx]*}, re_tok, :pop!
       end
 
       state :root do
@@ -78,27 +76,27 @@ module Rouge
         rule /(?:eq|lt|gt|le|ge|ne|not|and|or|cmp)\b/, Operator::Word
 
         # common delimiters
-        rule %r(s/(\\\\|\\/|[^/])*/(\\\\|\\/|[^/])*/[egimosx]*), re_tok
-        rule %r(s!(\\\\|\\!|[^!])*!(\\\\|\\!|[^!])*![egimosx]*), re_tok
-        rule %r(s\\(\\\\|[^\\])*\\(\\\\|[^\\])*\\[egimosx]*), re_tok
-        rule %r(s@(\\\\|\\@|[^@])*@(\\\\|\\@|[^@])*@[egimosx]*), re_tok
-        rule %r(s%(\\\\|\\%|[^%])*%(\\\\|\\%|[^%])*%[egimosx]*), re_tok
+        rule %r{s/(\\\\|\\/|[^/])*/(\\\\|\\/|[^/])*/[egimosx]*}, re_tok
+        rule %r{s!(\\\\|\\!|[^!])*!(\\\\|\\!|[^!])*![egimosx]*}, re_tok
+        rule %r{s\\(\\\\|[^\\])*\\(\\\\|[^\\])*\\[egimosx]*}, re_tok
+        rule %r{s@(\\\\|\\@|[^@])*@(\\\\|\\@|[^@])*@[egimosx]*}, re_tok
+        rule %r{s%(\\\\|\\%|[^%])*%(\\\\|\\%|[^%])*%[egimosx]*}, re_tok
 
         # balanced delimiters
         rule %r(s{(\\\\|\\}|[^}])*}\s*), re_tok, :balanced_regex
-        rule %r(s<(\\\\|\\>|[^>])*>\s*), re_tok, :balanced_regex
-        rule %r(s\[(\\\\|\\\]|[^\]])*\]\s*), re_tok, :balanced_regex
-        rule %r[s\((\\\\|\\\)|[^\)])*\)\s*], re_tok, :balanced_regex
+        rule %r{s<(\\\\|\\>|[^>])*>\s*}, re_tok, :balanced_regex
+        rule %r{s\[(\\\\|\\\]|[^\]])*\]\s*}, re_tok, :balanced_regex
+        rule %r{s\((\\\\|\\\)|[^\)])*\)\s*}, re_tok, :balanced_regex
 
-        rule %r(m?/(\\\\|\\/|[^/\n])*/[gcimosx]*), re_tok
+        rule %r{m?/(\\\\|\\/|[^/\n])*/[gcimosx]*}, re_tok
         rule %r(m(?=[/!\\{<\[\(@%\$])), re_tok, :balanced_regex
-        rule %r(((?<==~)|(?<=\())\s*/(\\\\|\\/|[^/])*/[gcimosx]*),
-          re_tok, :balanced_regex
+        rule %r{((?<==~)|(?<=\())\s*/(\\\\|\\/|[^/])*/[gcimosx]*},
+             re_tok, :balanced_regex
 
         rule /\s+/, Text
         rule /(?:#{builtins.join('|')})\b/, Name::Builtin
         rule /((__(DATA|DIE|WARN)__)|(STD(IN|OUT|ERR)))\b/,
-          Name::Builtin::Pseudo
+             Name::Builtin::Pseudo
 
         rule /<<([\'"]?)([a-zA-Z_][a-zA-Z0-9_]*)\1;?\n.*?\n\2\n/m, Str
 
@@ -111,7 +109,7 @@ module Rouge
         rule /0x[0-9A-Fa-f]+(_[0-9A-Fa-f]+)*/, Num::Hex
         rule /0b[01]+(_[01]+)*/, Num::Bin
         rule /(\d*(_\d*)*\.\d+(_\d*)*|\d+(_\d*)*\.\d+(_\d*)*)(e[+-]?\d+)?/i,
-          Num::Float
+             Num::Float
         rule /\d+(_\d*)*e[+-]?\d+(_\d*)*/i, Num::Float
         rule /\d+(_\d+)*/, Num::Integer
 
@@ -128,7 +126,7 @@ module Rouge
         rule /package\s+/, Keyword, :modulename
         rule /sub\s+/, Keyword, :funcname
         rule /\[\]|\*\*|::|<<|>>|>=|<=|<=>|={3}|!=|=~|!~|&&?|\|\||\.{1,3}/,
-          Operator
+             Operator
         rule /[-+\/*%=<>&^\|!\\~]=?/, Operator
         rule /[()\[\]:;,<>\/?{}]/, Punctuation
         rule(/(?=\w)/) { push :name }

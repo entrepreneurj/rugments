@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class SQL < RegexLexer
-      title "SQL"
-      desc "Structured Query Language, for relational databases"
+      title 'SQL'
+      desc 'Structured Query Language, for relational databases'
       tag 'sql'
       filenames '*.sql'
       mimetypes 'text/x-sql'
@@ -90,7 +88,7 @@ module Rouge
       state :root do
         rule /\s+/m, Text
         rule /--.*?\n/, Comment::Single
-        rule %r(/\*), Comment::Multiline, :multiline_comments
+        rule %r{/\*}, Comment::Multiline, :multiline_comments
         rule /\d+/, Num::Integer
         rule /'/, Str::Single, :single_string
         rule /"/, Name::Variable, :double_string
@@ -104,15 +102,15 @@ module Rouge
           end
         end
 
-        rule %r([+*/<>=~!@#%^&|?^-]), Operator
+        rule %r{[+*/<>=~!@#%^&|?^-]}, Operator
         rule /[;:()\[\],.]/, Punctuation
       end
 
       state :multiline_comments do
-        rule %r(/[*]), Comment::Multiline, :multiline_comments
-        rule %r([*]/), Comment::Multiline, :pop!
-        rule %r([^/*]+), Comment::Multiline
-        rule %r([/*]), Comment::Multiline
+        rule %r{/[*]}, Comment::Multiline, :multiline_comments
+        rule %r{[*]/}, Comment::Multiline, :pop!
+        rule %r{[^/*]+}, Comment::Multiline
+        rule %r{[/*]}, Comment::Multiline
       end
 
       state :backtick do

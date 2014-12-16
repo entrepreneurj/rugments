@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class INI < RegexLexer
-      title "INI"
+      title 'INI'
       desc 'the INI configuration format'
       tag 'ini'
 

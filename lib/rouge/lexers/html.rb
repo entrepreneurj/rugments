@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class HTML < RegexLexer
-      title "HTML"
-      desc "HTML, the markup language of the web"
+      title 'HTML'
+      desc 'HTML, the markup language of the web'
       tag 'html'
       filenames '*.htm', '*.html', '*.xhtml'
       mimetypes 'text/html', 'application/xhtml+xml'
@@ -34,8 +32,8 @@ module Rouge
           push :tag
         end
 
-        rule %r(<\s*[a-zA-Z0-9:-]+), Name::Tag, :tag # opening tags
-        rule %r(<\s*/\s*[a-zA-Z0-9:-]+\s*>), Name::Tag # closing tags
+        rule %r{<\s*[a-zA-Z0-9:-]+}, Name::Tag, :tag # opening tags
+        rule %r{<\s*/\s*[a-zA-Z0-9:-]+\s*>}, Name::Tag # closing tags
       end
 
       state :comment do
@@ -48,7 +46,7 @@ module Rouge
         rule /\s+/m, Text
         rule /[a-zA-Z0-9_:-]+\s*=/m, Name::Attribute, :attr
         rule /[a-zA-Z0-9_:-]+/, Name::Attribute
-        rule %r(/?\s*>)m, Name::Tag, :pop!
+        rule %r{/?\s*>}m, Name::Tag, :pop!
       end
 
       state :attr do
@@ -77,15 +75,15 @@ module Rouge
       end
 
       state :script_content do
-        rule %r(<\s*/\s*script\s*>)m, Name::Tag, :pop!
-        rule %r(.*?(?=<\s*/\s*script\s*>))m do
+        rule %r{<\s*/\s*script\s*>}m, Name::Tag, :pop!
+        rule %r{.*?(?=<\s*/\s*script\s*>)}m do
           delegate Javascript
         end
       end
 
       state :style_content do
-        rule %r(<\s*/\s*style\s*>)m, Name::Tag, :pop!
-        rule %r(.*(?=<\s*/\s*style\s*>))m do
+        rule %r{<\s*/\s*style\s*>}m, Name::Tag, :pop!
+        rule %r{.*(?=<\s*/\s*style\s*>)}m do
           delegate CSS
         end
       end

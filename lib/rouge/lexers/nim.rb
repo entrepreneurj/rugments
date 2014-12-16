@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Nim < RegexLexer
       # This is pretty much a 1-1 port of the pygments NimrodLexer class
-      title "Nim"
-      desc "The Nim programming language (http://nim-lang.org/)"
+      title 'Nim'
+      desc 'The Nim programming language (http://nim-lang.org/)'
 
       tag 'nim'
       aliases 'nimrod'
@@ -28,8 +26,8 @@ module Rouge
       )
 
       TYPES = %w(
-       int int8 int16 int32 int64 float float32 float64 bool char range array
-       seq set string
+        int int8 int16 int32 int64 float float32 float64 bool char range array
+        seq set string
       )
 
       NAMESPACE = %w(
@@ -111,7 +109,7 @@ module Rouge
              Punctuation)
 
         # Strings
-        rule(/(?:[\w]+)"/,Str, :rdqs)
+        rule(/(?:[\w]+)"/, Str, :rdqs)
         rule(/"""/,       Str, :tdqs)
         rule(/"/,         Str, :dqs)
 
@@ -119,23 +117,23 @@ module Rouge
         rule(/'/, Str::Char, :chars)
 
         # Keywords
-        rule(%r[(#{Nim.underscorize(OPWORDS)})\b], Operator::Word)
+        rule(%r{(#{Nim.underscorize(OPWORDS)})\b}, Operator::Word)
         rule(/(p_?r_?o_?c_?\s)(?![\(\[\]])/, Keyword, :funcname)
-        rule(%r[(#{Nim.underscorize(KEYWORDS)})\b],  Keyword)
-        rule(%r[(#{Nim.underscorize(NAMESPACE)})\b], Keyword::Namespace)
+        rule(%r{(#{Nim.underscorize(KEYWORDS)})\b},  Keyword)
+        rule(%r{(#{Nim.underscorize(NAMESPACE)})\b}, Keyword::Namespace)
         rule(/(v_?a_?r)\b/, Keyword::Declaration)
-        rule(%r[(#{Nim.underscorize(TYPES)})\b],          Keyword::Type)
-        rule(%r[(#{Nim.underscorize(PSEUDOKEYWORDS)})\b], Keyword::Pseudo)
+        rule(%r{(#{Nim.underscorize(TYPES)})\b},          Keyword::Type)
+        rule(%r{(#{Nim.underscorize(PSEUDOKEYWORDS)})\b}, Keyword::Pseudo)
         # Identifiers
         rule(/\b((?![_\d])\w)(((?!_)\w)|(_(?!_)\w))*/, Name)
 
         # Numbers
         # Note: Have to do this with a block to push multiple states first,
         #       since we can't pass array of states like w/ Pygments.
-        rule(/[0-9][0-9_]*(?=([eE.]|'?[fF](32|64)))/) do |number|
-         push :floatsuffix
-         push :floatnumber
-         token Num::Float
+        rule(/[0-9][0-9_]*(?=([eE.]|'?[fF](32|64)))/) do |_number|
+          push :floatsuffix
+          push :floatnumber
+          token Num::Float
         end
         rule(/0[xX][a-fA-F0-9][a-fA-F0-9_]*/, Num::Hex,     :intsuffix)
         rule(/0[bB][01][01_]*/,               Num,          :intsuffix)
@@ -146,7 +144,6 @@ module Rouge
         rule(/\s+/, Text)
         rule(/.+$/, Error)
       end
-
     end
   end
 end

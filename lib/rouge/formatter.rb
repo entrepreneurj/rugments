@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   # A Formatter takes a token stream and formats it for human viewing.
   class Formatter
@@ -8,7 +6,7 @@ module Rouge
 
     # Specify or get the unique tag for this formatter.  This is used
     # for specifying a formatter in `rougify`.
-    def self.tag(tag=nil)
+    def self.tag(tag = nil)
       return @tag unless tag
       REGISTRY[tag] = self
 
@@ -21,7 +19,7 @@ module Rouge
     end
 
     # Format a token stream.  Delegates to {#format}.
-    def self.format(tokens, opts={}, &b)
+    def self.format(tokens, opts = {}, &b)
       new(opts).format(tokens, &b)
     end
 
@@ -43,8 +41,8 @@ module Rouge
 
     # @abstract
     # yield strings that, when concatenated, form the formatted output
-    def stream(tokens, &b)
-      raise 'abstract'
+    def stream(_tokens, &_b)
+      fail 'abstract'
     end
   end
 end

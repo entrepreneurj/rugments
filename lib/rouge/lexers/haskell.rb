@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Haskell < RegexLexer
-      title "Haskell"
-      desc "The Haskell programming language (haskell.org)"
+      title 'Haskell'
+      desc 'The Haskell programming language (haskell.org)'
 
       tag 'haskell'
       aliases 'hs'
@@ -63,13 +61,13 @@ module Rouge
         rule /[A-Z][\w']*/, Keyword::Type
 
         # lambda operator
-        rule %r(\\(?![:!#\$\%&*+.\\/<=>?@^\|~-]+)), Name::Function
+        rule %r{\\(?![:!#\$\%&*+.\\/<=>?@^\|~-]+)}, Name::Function
         # special operators
-        rule %r((<-|::|->|=>|=)(?![:!#\$\%&*+.\\/<=>?@^\|~-]+)), Operator
+        rule %r{(<-|::|->|=>|=)(?![:!#\$\%&*+.\\/<=>?@^\|~-]+)}, Operator
         # constructor/type operators
-        rule %r(:[:!#\$\%&*+.\\/<=>?@^\|~-]*), Operator
+        rule %r{:[:!#\$\%&*+.\\/<=>?@^\|~-]*}, Operator
         # other operators
-        rule %r([:!#\$\%&*+.\\/<=>?@^\|~-]+), Operator
+        rule %r{[:!#\$\%&*+.\\/<=>?@^\|~-]+}, Operator
 
         rule /\d+e[+-]?\d+/i, Num::Float
         rule /\d+\.\d+(e[+-]?\d+)?/i, Num::Float

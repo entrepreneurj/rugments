@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Gherkin < RegexLexer
       tag 'gherkin'
       aliases 'cucumber', 'behat'
 
-      title "Gherkin"
+      title 'Gherkin'
       desc 'A business-readable spec DSL ( github.com/cucumber/cucumber/wiki/Gherkin )'
 
       filenames '*.feature'
@@ -39,32 +37,32 @@ module Rouge
       rest_of_line = /.*?(?=[#\n])/
 
       state :basic do
-        rule %r(#.*$), Comment
+        rule %r{#.*$}, Comment
         rule /[ \r\t]+/, Text
       end
 
       state :root do
         mixin :basic
-        rule %r(\n), Text
-        rule %r(""".*?""")m, Str
-        rule %r(@[^\s@]+), Name::Tag
+        rule %r{\n}, Text
+        rule %r{""".*?"""}m, Str
+        rule %r{@[^\s@]+}, Name::Tag
         mixin :has_table
         mixin :has_examples
       end
 
       state :has_scenarios do
-        rule %r((.*?)(:)) do |m|
+        rule %r{(.*?)(:)} do |m|
           reset_stack
 
           keyword = m[1]
           keyword_tok = if self.class.keywords[:element].include? keyword
-            push :description; Keyword::Namespace
-          elsif self.class.keywords[:feature].include? keyword
-            push :feature_description; Keyword::Declaration
-          elsif self.class.keywords[:examples].include? keyword
-            push :example_description; Name::Namespace
-          else
-            Error
+                          push :description; Keyword::Namespace
+                        elsif self.class.keywords[:feature].include? keyword
+                          push :feature_description; Keyword::Declaration
+                        elsif self.class.keywords[:examples].include? keyword
+                          push :example_description; Name::Namespace
+                        else
+                          Error
           end
 
           groups keyword_tok, Punctuation

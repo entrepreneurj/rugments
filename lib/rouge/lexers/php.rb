@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class PHP < TemplateLexer
-      title "PHP"
-      desc "The PHP scripting language (php.net)"
+      title 'PHP'
+      desc 'The PHP scripting language (php.net)'
       tag 'php'
       aliases 'php', 'php3', 'php4', 'php5'
       filenames '*.php', '*.php[345]'
       mimetypes 'text/x-php'
 
-      default_options :parent => 'html'
+      default_options parent: 'html'
 
-      def initialize(opts={})
+      def initialize(opts = {})
         # if truthy, the lexer starts highlighting with php code
         # (no <?php required)
         @start_inline = opts.delete(:start_inline)
@@ -24,7 +22,7 @@ module Rouge
 
       def self.builtins
         load Pathname.new(__FILE__).dirname.join('php/builtins.rb')
-        self.builtins
+        builtins
       end
 
       def builtins
@@ -71,11 +69,11 @@ module Rouge
         rule /<<<('?)([a-z_]\w*)\1\n.*?\n\2;?\n/im, Str::Heredoc
         rule /\s+/, Text
         rule /#.*?\n/, Comment::Single
-        rule %r(//.*?\n), Comment::Single
+        rule %r{//.*?\n}, Comment::Single
         # empty comment, otherwise seen as the start of a docstring
-        rule %r(/\*\*/), Comment::Multiline
-        rule %r(/\*\*.*?\*/)m, Str::Doc
-        rule %r(/\*.*?\*/)m, Comment::Multiline
+        rule %r{/\*\*/}, Comment::Multiline
+        rule %r{/\*\*.*?\*/}m, Str::Doc
+        rule %r{/\*.*?\*/}m, Comment::Multiline
         rule /(->|::)(\s*)([a-zA-Z_][a-zA-Z0-9_]*)/ do
           groups Operator, Text, Name::Attribute
         end
@@ -108,7 +106,7 @@ module Rouge
 
           if self.class.keywords.include? name
             token Keyword
-          elsif self.builtins.include? name
+          elsif builtins.include? name
             token Name::Builtin
           else
             token Name::Other
@@ -138,7 +136,7 @@ module Rouge
         rule /"/, Str::Double, :pop!
         rule /[^\\{$"]+/, Str::Double
         rule /\\([nrt\"$\\]|[0-7]{1,3}|x[0-9A-Fa-f]{1,2})/,
-          Str::Escape
+             Str::Escape
         rule /\$[a-zA-Z_][a-zA-Z0-9_]*(\[\S+\]|->[a-zA-Z_][a-zA-Z0-9_]*)?/, Name::Variable
 
         rule /\{\$\{/, Str::Interpol, :interp_double

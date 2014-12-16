@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class C < RegexLexer
@@ -7,11 +5,11 @@ module Rouge
       filenames '*.c', '*.h', '*.idc'
       mimetypes 'text/x-chdr', 'text/x-csrc'
 
-      title "C"
-      desc "The C programming language"
+      title 'C'
+      desc 'The C programming language'
 
       # optional comment or whitespace
-      ws = %r((?:\s|//.*?\n|/[*].*?[*]/)+)
+      ws = %r{(?:\s|//.*?\n|/[*].*?[*]/)+}
       id = /[a-zA-Z_][a-zA-Z0-9_]*/
 
       def self.keywords
@@ -80,12 +78,12 @@ module Rouge
       state :inline_whitespace do
         rule /[ \t\r]+/, Text
         rule /\\\n/, Text # line continuation
-        rule %r(/(\\\n)?[*].*?[*](\\\n)?/)m, Comment::Multiline
+        rule %r{/(\\\n)?[*].*?[*](\\\n)?/}m, Comment::Multiline
       end
 
       state :whitespace do
         rule /\n+/m, Text, :bol
-        rule %r(//(\\.|.)*?\n), Comment::Single, :bol
+        rule %r{//(\\.|.)*?\n}, Comment::Single, :bol
         mixin :inline_whitespace
       end
 
@@ -98,13 +96,13 @@ module Rouge
         mixin :whitespace
         rule /L?"/, Str, :string
         rule %r(L?'(\\.|\\[0-7]{1,3}|\\x[a-f0-9]{1,2}|[^\\'\n])')i, Str::Char
-        rule %r((\d+[.]\d*|[.]?\d+)e[+-]?\d+[lu]*)i, Num::Float
-        rule %r(\d+e[+-]?\d+[lu]*)i, Num::Float
+        rule %r{(\d+[.]\d*|[.]?\d+)e[+-]?\d+[lu]*}i, Num::Float
+        rule %r{\d+e[+-]?\d+[lu]*}i, Num::Float
         rule /0x[0-9a-f]+[lu]*/i, Num::Hex
         rule /0[0-7]+[lu]*/i, Num::Oct
         rule /\d+[lu]*/i, Num::Integer
-        rule %r(\*/), Error
-        rule %r([~!%^&*+=\|?:<>/-]), Operator
+        rule %r{\*/}, Error
+        rule %r{[~!%^&*+=\|?:<>/-]}, Operator
         rule /[()\[\],.]/, Punctuation
         rule /\bcase\b/, Keyword, :case
         rule /(?:true|false|NULL)\b/, Name::Builtin
@@ -150,12 +148,12 @@ module Rouge
         end
 
         # function declarations
-        rule %r(
+        rule %r{
           ([\w*\s]+?[\s*]) # return arguments
           (#{id})          # function name
           (\s*\([^;]*?\))  # signature
           (#{ws})(;)       # semicolon
-        )mx do |m|
+                }mx do |m|
           # TODO: do this better.
           recurse m[1]
           token Name::Function
@@ -194,10 +192,10 @@ module Rouge
       state :macro do
         # NB: pop! goes back to :bol
         rule /\n/, Comment::Preproc, :pop!
-        rule %r([^/\n\\]+), Comment::Preproc
+        rule %r{[^/\n\\]+}, Comment::Preproc
         rule /\\./m, Comment::Preproc
         mixin :inline_whitespace
-        rule %r(/), Comment::Preproc
+        rule %r{/}, Comment::Preproc
       end
 
       state :if_0 do

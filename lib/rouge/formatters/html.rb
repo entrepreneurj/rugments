@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*- #
-
-# stdlib
 require 'cgi'
 
 module Rouge
@@ -23,7 +20,7 @@ module Rouge
       #
       # Content will be wrapped in a tag (`div` if tableized, `pre` if
       # not) with the given `:css_class` unless `:wrap` is set to `false`.
-      def initialize(opts={})
+      def initialize(opts = {})
         @css_class = opts.fetch(:css_class, 'highlight')
         @css_class = " class=#{@css_class.inspect}" if @css_class
 
@@ -44,10 +41,11 @@ module Rouge
         end
       end
 
-    private
+      private
+
       def stream_untableized(tokens, &b)
-        yield "<pre#@css_class><code>" if @wrap
-        tokens.each{ |tok, val| span(tok, val, &b) }
+        yield "<pre#{@css_class}><code>" if @wrap
+        tokens.each { |tok, val| span(tok, val, &b) }
         yield "</code></pre>\n" if @wrap
       end
 
@@ -69,10 +67,10 @@ module Rouge
         end
 
         # generate a string of newline-separated line numbers for the gutter>
-        numbers = %<<pre class="lineno">#{(@start_line..num_lines+@start_line-1)
-          .to_a.join("\n")}</pre>>
+        numbers = %(<pre class="lineno">#{(@start_line..num_lines + @start_line - 1)
+          .to_a.join("\n")}</pre>)
 
-        yield "<div#@css_class>" if @wrap
+        yield "<div#{@css_class}>" if @wrap
         yield '<table style="border-spacing: 0"><tbody><tr>'
 
         # the "gl" class applies the style for Generic.Lineno
@@ -93,12 +91,12 @@ module Rouge
       TABLE_FOR_ESCAPE_HTML = {
         '&' => '&amp;',
         '<' => '&lt;',
-        '>' => '&gt;',
+        '>' => '&gt;'
       }
 
       def span(tok, val)
         val = val.gsub(/[&<>]/, TABLE_FOR_ESCAPE_HTML)
-        shortname = tok.shortname or raise "unknown token: #{tok.inspect} for #{val.inspect}"
+        shortname = tok.shortname or fail "unknown token: #{tok.inspect} for #{val.inspect}"
 
         if shortname.empty?
           yield val

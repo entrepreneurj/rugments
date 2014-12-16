@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Python < RegexLexer
-      title "Python"
-      desc "The Python programming language (python.org)"
+      title 'Python'
+      desc 'The Python programming language (python.org)'
       tag 'python'
       aliases 'py'
       filenames '*.py', '*.pyw', '*.sc', 'SConstruct', 'SConscript', '*.tac'
@@ -222,7 +220,6 @@ module Rouge
           mixin :"#{qtype}"
         end
       end
-
     end
   end
 end

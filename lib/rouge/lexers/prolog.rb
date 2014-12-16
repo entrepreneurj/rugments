@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Prolog < RegexLexer
-      title "Prolog"
-      desc "The Prolog programming language (http://en.wikipedia.org/wiki/Prolog)"
+      title 'Prolog'
+      desc 'The Prolog programming language (http://en.wikipedia.org/wiki/Prolog)'
       tag 'prolog'
       aliases 'prolog'
       filenames '*.pro', '*.P', '*.prolog', '*.pl'
@@ -36,7 +34,7 @@ module Rouge
 
       state :operators do
         rule /(<|>|=<|>=|==|=:=|=|\/|\/\/|\*|\+|-)(?=\s|[a-zA-Z0-9\[])/,
-          Operator
+             Operator
         rule /is/, Operator
         rule /(mod|div|not)/, Operator
         rule /[#&*+-.\/:<=>?@^~]+/, Operator

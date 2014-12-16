@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class VisualBasic < RegexLexer
-      title "Visual Basic"
-      desc "Visual Basic"
+      title 'Visual Basic'
+      desc 'Visual Basic'
       tag 'vb'
       aliases 'visualbasic'
       filenames '*.vbs'
@@ -68,7 +66,7 @@ module Rouge
 
       state :root do
         mixin :whitespace
-        rule %r(
+        rule %r{
             [#]If\b .*? \bThen
           | [#]ElseIf\b .*? \bThen
           | [#]End \s+ If
@@ -78,11 +76,11 @@ module Rouge
           | [#]Region .*? \n
           | [#]End \s+ Region
           | [#]ExternalChecksum
-        )x, Comment::Preproc
+                }x, Comment::Preproc
         rule /[.]/, Punctuation, :dotted
         rule /[(){}!#,:]/, Punctuation
         rule /Option\s+(Strict|Explicit|Compare)\s+(On|Off|Binary|Text)/,
-          Keyword::Declaration
+             Keyword::Declaration
         rule /End\b/, Keyword, :end
         rule /(Dim|Const)\b/, Keyword, :dim
         rule /(Function|Sub|Property)\b/, Keyword, :funcname
@@ -105,7 +103,7 @@ module Rouge
         end
 
         rule(
-          %r(&=|[*]=|/=|\\=|\^=|\+=|-=|<<=|>>=|<<|>>|:=|<=|>=|<>|[-&*/\\^+=<>.]),
+          %r{&=|[*]=|/=|\\=|\^=|\+=|-=|<<=|>>=|<<|>>|:=|<=|>=|<>|[-&*/\\^+=<>.]},
           Operator
         )
 
@@ -156,7 +154,7 @@ module Rouge
       state :end do
         mixin :whitespace
         rule /(Function|Sub|Property|Class|Structure|Enum|Module|Namespace)\b/,
-          Keyword, :pop!
+             Keyword, :pop!
         rule(//) { pop! }
       end
     end

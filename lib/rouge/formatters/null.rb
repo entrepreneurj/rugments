@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Formatters
     # A formatter which renders nothing.
@@ -9,7 +7,7 @@ module Rouge
       def initialize(*)
       end
 
-      def stream(tokens, &b)
+      def stream(tokens, &_b)
         tokens.each do |tok, val|
           yield "#{tok} #{val.inspect}\n"
         end

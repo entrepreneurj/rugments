@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class YAML < RegexLexer
-      title "YAML"
+      title 'YAML'
       desc "Yaml Ain't Markup Language (yaml.org)"
       mimetypes 'text/x-yaml'
       tag 'yaml'
@@ -20,48 +18,48 @@ module Rouge
 
       # reset the indentation levels
       def reset_indent
-        puts "    yaml: reset_indent" if @debug
+        puts '    yaml: reset_indent' if @debug
         @indent_stack = [0]
         @next_indent = 0
         @block_scalar_indent = nil
       end
 
       def indent
-        raise 'empty indent stack!' if @indent_stack.empty?
+        fail 'empty indent stack!' if @indent_stack.empty?
         @indent_stack.last
       end
 
       def dedent?(level)
-        level < self.indent
+        level < indent
       end
 
       def indent?(level)
-        level > self.indent
+        level > indent
       end
 
       # Save a possible indentation level
       def save_indent(match)
         @next_indent = match.size
-        puts "    yaml: indent: #{self.indent}/#@next_indent" if @debug
-        puts "    yaml: popping indent stack - before: #@indent_stack" if @debug
+        puts "    yaml: indent: #{indent}/#{@next_indent}" if @debug
+        puts "    yaml: popping indent stack - before: #{@indent_stack}" if @debug
         if dedent?(@next_indent)
           @indent_stack.pop while dedent?(@next_indent)
-          puts "    yaml: popping indent stack - after: #@indent_stack" if @debug
-          puts "    yaml: indent: #{self.indent}/#@next_indent" if @debug
+          puts "    yaml: popping indent stack - after: #{@indent_stack}" if @debug
+          puts "    yaml: indent: #{indent}/#{@next_indent}" if @debug
 
           # dedenting to a state not previously indented to is an error
-          [match[0...self.indent], match[self.indent..-1]]
+          [match[0...indent], match[indent..-1]]
         else
           [match, '']
         end
       end
 
       def continue_indent(match)
-        puts "    yaml: continue_indent" if @debug
+        puts '    yaml: continue_indent' if @debug
         @next_indent += match.size
       end
 
-      def set_indent(match, opts={})
+      def set_indent(match, opts = {})
         if indent < @next_indent
           @indent_stack << @next_indent
         end
@@ -152,10 +150,10 @@ module Rouge
         rule /!<[0-9A-Za-z;\/?:@&=+$,_.!~*'()\[\]%-]+>/, Keyword::Type
 
         # a tag in the form '!', '!suffix' or '!handle!suffix'
-        rule %r(
+        rule %r{
           (?:![\w-]+)? # handle
           !(?:[\w;/?:@&=+$,.!~*\'()\[\]%-]*) # suffix
-        )x, Keyword::Type
+                }x, Keyword::Type
 
         # an anchor
         rule /&[\w-]+/, Name::Label
@@ -168,7 +166,7 @@ module Rouge
         # implicit key
         rule /:(?=\s|$)/ do |m|
           token Punctuation::Indicator
-          set_indent m[0], :implicit => true
+          set_indent m[0], implicit: true
         end
 
         # literal and folded scalars
@@ -229,7 +227,7 @@ module Rouge
 
           indent_size = m[0].size
 
-          dedent_level = @block_scalar_indent || self.indent
+          dedent_level = @block_scalar_indent || indent
           @block_scalar_indent ||= indent_size
 
           if indent_size < dedent_level
@@ -242,11 +240,11 @@ module Rouge
 
       state :block_scalar_header do
         # optional indentation indicator and chomping flag, in either order
-        rule %r(
+        rule %r{
           (
             ([1-9])[+-]? | [+-]?([1-9])?
           )(?=[ ]|$)
-        )x do |m|
+                }x do |m|
           @block_scalar_indent = nil
           goto :ignored_line
           next if m[0].empty?
@@ -289,7 +287,7 @@ module Rouge
         # escapes
         rule /\\[0abt\tn\nvfre "\\N_LP]/, Str::Escape
         rule /\\(?:x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
-          Str::Escape
+             Str::Escape
         rule /[^ \t\n\r\f\v"\\]+/, Str
       end
 
@@ -308,7 +306,7 @@ module Rouge
           indent_size = m[0].size
 
           # dedent = end of scalar
-          if indent_size <= self.indent
+          if indent_size <= indent
             pop!
             save_indent(m[0])
             push :indentation
@@ -351,10 +349,10 @@ module Rouge
       end
 
       state :tag_directive do
-        rule %r(
+        rule %r{
           ([ ]+)(!|![\w-]*!) # prefix
           ([ ]+)(!|!?[\w;/?:@&=+$,.!~*'()\[\]%-]+) # tag handle
-        )x do
+                }x do
           groups Text, Keyword::Type, Text, Keyword::Type
           goto :ignored_line
         end

@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class XML < RegexLexer
-      title "XML"
-      desc %q(<desc for="this-lexer">XML</desc>)
+      title 'XML'
+      desc '<desc for="this-lexer">XML</desc>'
       tag 'xml'
       filenames *%w(*.xml *.xsl *.rss *.xslt *.xsd *.wsdl)
       mimetypes *%w(
@@ -19,8 +17,8 @@ module Rouge
         return 0.9 if text.doctype?
         return 0.8 if text =~ /\A<\?xml\b/
         start = text[0..1000]
-        return 0.6 if start =~ %r(<xml\b)
-        return 0.3 if start =~ %r(<.+?>.*?</.+?>)m
+        return 0.6 if start =~ %r{<xml\b}
+        return 0.3 if start =~ %r{<.+?>.*?</.+?>}m
       end
 
       state :root do
@@ -32,10 +30,10 @@ module Rouge
         rule /<![^>]*>/, Comment::Preproc
 
         # open tags
-        rule %r(<\s*[\w:.-]+)m, Name::Tag, :tag
+        rule %r{<\s*[\w:.-]+}m, Name::Tag, :tag
 
         # self-closing tags
-        rule %r(<\s*/\s*[\w:.-]+\s*>)m, Name::Tag
+        rule %r{<\s*/\s*[\w:.-]+\s*>}m, Name::Tag
       end
 
       state :comment do
@@ -47,7 +45,7 @@ module Rouge
       state :tag do
         rule /\s+/m, Text
         rule /[\w.:-]+\s*=/m, Name::Attribute, :attr
-        rule %r(/?\s*>), Name::Tag, :pop!
+        rule %r{/?\s*>}, Name::Tag, :pop!
       end
 
       state :attr do

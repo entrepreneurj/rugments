@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class TOML < RegexLexer
-      title "TOML"
+      title 'TOML'
       desc 'the TOML configuration format (https://github.com/mojombo/toml)'
       tag 'toml'
 
@@ -36,7 +34,6 @@ module Rouge
           groups Name::Property, Text, Punctuation
           push :value
         end
-
       end
 
       state :value do

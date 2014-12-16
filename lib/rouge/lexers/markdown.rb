@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Markdown < RegexLexer
-      title "Markdown"
-      desc "Markdown, a light-weight markup language for authors"
+      title 'Markdown'
+      desc 'Markdown, a light-weight markup language for authors'
 
       tag 'markdown'
       aliases 'md', 'mkd'
@@ -34,7 +32,7 @@ module Rouge
         # TODO: syntax highlight the code block, github style
         rule /(\n[ \t]*)(```|~~~)(.*?)(\n.*?)(\2)/m do |m|
           sublexer = Lexer.find_fancy(m[3].strip, m[4])
-          sublexer ||= PlainText.new(:token => Str::Backtick)
+          sublexer ||= PlainText.new(token: Str::Backtick)
 
           token Text, m[1]
           token Punctuation, m[2]
@@ -64,11 +62,11 @@ module Rouge
 
         # link references
         # [foo]: bar "baz"
-        rule %r(^
+        rule %r{^
           (\s*) # leading whitespace
           (\[) (#{edot}+?) (\]) # the reference
           (\s*) (:) # colon
-        )x do
+                }x do
           groups Text, Punctuation, Str::Symbol, Punctuation, Text, Punctuation
 
           push :title
@@ -89,8 +87,7 @@ module Rouge
 
         # Automatic links
         rule /<.*?@.+[.].+>/, Name::Variable
-        rule %r[<(https?|mailto|ftp)://#{edot}*?>], Name::Variable
-
+        rule %r{<(https?|mailto|ftp)://#{edot}*?>}, Name::Variable
 
         rule /[^\\`\[*\n&<]+/, Text
 

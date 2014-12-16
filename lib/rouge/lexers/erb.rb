@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class ERB < TemplateLexer
-      title "ERB"
-      desc "Embedded ruby template files"
+      title 'ERB'
+      desc 'Embedded ruby template files'
 
       tag 'erb'
       aliases 'eruby', 'rhtml'
@@ -15,7 +13,7 @@ module Rouge
         return 0.4 if text =~ /<%.*%>/
       end
 
-      def initialize(opts={})
+      def initialize(opts = {})
         @ruby_lexer = Ruby.new(opts)
 
         super(opts)

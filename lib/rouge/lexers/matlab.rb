@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Matlab < RegexLexer
-      title "MATLAB"
-      desc "Matlab"
+      title 'MATLAB'
+      desc 'Matlab'
       tag 'matlab'
       aliases 'm'
       filenames '*.m'
@@ -23,7 +21,7 @@ module Rouge
 
       def self.builtins
         load Pathname.new(__FILE__).dirname.join('matlab/builtins.rb')
-        self.builtins
+        builtins
       end
 
       state :root do
@@ -39,7 +37,6 @@ module Rouge
           delegate Shell, m[2]
         end
 
-
         rule /[a-zA-Z][_a-zA-Z0-9]*/m do |m|
           match = m[0]
           if self.class.keywords.include? match
@@ -54,7 +51,6 @@ module Rouge
         rule %r{[(){};:,\/\\\]\[]}, Punctuation
 
         rule /~=|==|<<|>>|[-~+\/*%=<>&^|.]/, Operator
-
 
         rule /(\d+\.\d*|\d*\.\d+)(e[+-]?[0-9]+)?/i, Num::Float
         rule /\d+e[+-]?[0-9]+/i, Num::Float

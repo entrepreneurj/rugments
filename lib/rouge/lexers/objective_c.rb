@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     load_const :C, 'c.rb'
 
     class ObjectiveC < C
       tag 'objective_c'
-      title "Objective-C"
+      title 'Objective-C'
       desc 'an extension of C commonly used to write Apple software'
       aliases 'objc'
       filenames '*.m', '*.h'
@@ -33,13 +31,13 @@ module Rouge
         return 1 if text =~ /@(end|implementation|protocol|property)\b/
 
         id = /[a-z$_][a-z0-9$_]*/i
-        return 0.4 if text =~ %r(
+        return 0.4 if text =~ %r{
           \[ \s* #{id} \s+
           (?:
             #{id} \s* \]
             | #{id}? :
           )
-        )x
+                }x
         return 0.4 if text.include? '@"'
       end
 
@@ -48,9 +46,9 @@ module Rouge
       prepend :statements do
         rule /@"/, Str, :string
         rule /@'(\\[0-7]{1,3}|\\x[a-fA-F0-9]{1,2}|\\.|[^\\'\n]')/,
-          Str::Char
+             Str::Char
         rule /@(\d+[.]\d*|[.]\d+|\d+)e[+-]?\d+l?/i,
-          Num::Float
+             Num::Float
         rule /@(\d+[.]\d*|[.]\d+|\d+f)f?/i, Num::Float
         rule /@0x\h+[lL]?/, Num::Hex
         rule /@0[0-7]+l?/i, Num::Oct
@@ -150,11 +148,11 @@ module Rouge
       end
 
       prepend :root do
-        rule %r(
+        rule %r{
           ([-+])(\s*)
           ([(].*?[)])?(\s*)
           (?=#{id}:?)
-        )ix do |m|
+                }ix do |m|
           token Keyword, m[1]; token Text, m[2]
           recurse m[3]; token Text, m[4]
           push :method_definition
@@ -180,7 +178,7 @@ module Rouge
         end
 
         mixin :inline_whitespace
-        rule %r(//.*?\n), Comment::Single
+        rule %r{//.*?\n}, Comment::Single
         rule /\s+/m, Text
 
         rule(//) { pop! }

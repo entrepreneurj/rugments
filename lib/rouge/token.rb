@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   class Token
     class << self
@@ -38,8 +36,8 @@ module Rouge
       end
 
       def register!
-        Token.cache[self.qualname] = self
-        parent.sub_tokens[self.name] = self
+        Token.cache[qualname] = self
+        parent.sub_tokens[name] = self
       end
 
       def make_token(name, shortname, &b)

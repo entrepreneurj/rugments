@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Sed < RegexLexer
-      title "sed"
+      title 'sed'
       desc 'sed, the ultimate stream editor'
 
       tag 'sed'
@@ -81,7 +79,6 @@ module Rouge
           delegate replacement, m[5]
           token Punctuation, m[6]
 
-
           goto :flags
         end
 
@@ -133,12 +130,12 @@ module Rouge
         rule /\d+/, addr_tok
         rule /[$,~+!]/, addr_tok
 
-        rule %r((/)(\\.|.)*?(/)) do |m|
+        rule %r{(/)(\\.|.)*?(/)} do |m|
           token addr_tok, m[1]; delegate regex, m[2]; token addr_tok, m[3]
         end
 
         # alternate regex rage delimiters
-        rule %r((\\)(.)(\\.|.)*?(\2)) do |m|
+        rule %r{(\\)(.)(\\.|.)*?(\2)} do |m|
           token addr_tok, m[1] + m[2]
           delegate regex, m[3]
           token addr_tok, m[4]

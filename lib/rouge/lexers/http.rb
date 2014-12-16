@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class HTTP < RegexLexer
       tag 'http'
-      title "HTTP"
+      title 'HTTP'
       desc 'http requests and responses'
 
       def self.methods
@@ -23,11 +21,11 @@ module Rouge
 
       state :root do
         # request
-        rule %r(
+        rule %r{
           (#{HTTP.methods.join('|')})([ ]+) # method
           ([^ ]+)([ ]+)                     # path
           (HTTPS?)(/)(1[.][01])(\r?\n|$)  # http version
-        )ox do
+                }ox do
           groups(
             Name::Function, Text,
             Name::Namespace, Text,
@@ -71,7 +69,7 @@ module Rouge
       end
 
       state :content do
-        rule /.+/m do |m|
+        rule /.+/m do |_m|
           delegate(content_lexer)
         end
       end

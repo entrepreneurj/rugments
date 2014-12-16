@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     load_const :Lua, 'lua.rb'
 
     class Moonscript < RegexLexer
-      title "MoonScript"
-      desc "Moonscript (http://www.moonscript.org)"
+      title 'MoonScript'
+      desc 'Moonscript (http://www.moonscript.org)'
       tag 'moonscript'
       aliases 'moon'
       filenames '*.moon'
       mimetypes 'text/x-moonscript', 'application/x-moonscript'
 
-      def initialize(opts={})
+      def initialize(opts = {})
         @function_highlighting = opts.delete(:function_highlighting) { true }
         @disabled_modules = opts.delete(:disabled_modules) { [] }
         super(opts)
@@ -34,37 +32,37 @@ module Rouge
       end
 
       state :root do
-        rule %r(#!(.*?)$), Comment::Preproc # shebang
+        rule %r{#!(.*?)$}, Comment::Preproc # shebang
         rule //, Text, :main
       end
 
       state :base do
         ident = '(?:[\w_][\w\d_]*)'
 
-        rule %r((?i)(\d*\.\d+|\d+\.\d*)(e[+-]?\d+)?'), Num::Float
-        rule %r((?i)\d+e[+-]?\d+), Num::Float
-        rule %r((?i)0x[0-9a-f]*), Num::Hex
-        rule %r(\d+), Num::Integer
-        rule %r(@#{ident}*), Name::Variable::Instance
-        rule %r([A-Z][\w\d_]*), Name::Class
-        rule %r("?[^"]+":), Literal::String::Symbol
-        rule %r(#{ident}:), Literal::String::Symbol
-        rule %r(:#{ident}), Literal::String::Symbol
+        rule %r{(?i)(\d*\.\d+|\d+\.\d*)(e[+-]?\d+)?'}, Num::Float
+        rule %r{(?i)\d+e[+-]?\d+}, Num::Float
+        rule %r{(?i)0x[0-9a-f]*}, Num::Hex
+        rule %r{\d+}, Num::Integer
+        rule %r{@#{ident}*}, Name::Variable::Instance
+        rule %r{[A-Z][\w\d_]*}, Name::Class
+        rule %r{"?[^"]+":}, Literal::String::Symbol
+        rule %r{#{ident}:}, Literal::String::Symbol
+        rule %r{:#{ident}}, Literal::String::Symbol
 
-        rule %r(\s+), Text::Whitespace
-        rule %r((==|~=|!=|<=|>=|\.\.\.|\.\.|->|=>|[=+\-*/%^<>#!\\])), Operator
+        rule %r{\s+}, Text::Whitespace
+        rule %r{(==|~=|!=|<=|>=|\.\.\.|\.\.|->|=>|[=+\-*/%^<>#!\\])}, Operator
         rule %r([\[\]\{\}\(\)\.,:;]), Punctuation
-        rule %r((and|or|not)\b), Operator::Word
+        rule %r{(and|or|not)\b}, Operator::Word
 
-        keywords = %w{
+        keywords = %w(
           break class continue do else elseif end extends for if import in
           repeat return switch super then unless until using when with while
-        }
-        rule %r((#{keywords.join('|')})\b), Keyword
-        rule %r((local|export)\b), Keyword::Declaration
-        rule %r((true|false|nil)\b), Keyword::Constant
+        )
+        rule %r{(#{keywords.join('|')})\b}, Keyword
+        rule %r{(local|export)\b}, Keyword::Declaration
+        rule %r{(true|false|nil)\b}, Keyword::Constant
 
-        rule %r([A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?) do |m|
+        rule %r{[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)?} do |m|
           name = m[0]
           if self.builtins.include?(name)
             token Name::Builtin
@@ -80,18 +78,18 @@ module Rouge
       end
 
       state :main do
-        rule %r(--.*$), Comment::Single
-        rule %r(\[(=*)\[.*?\]\1\])m, Str::Heredoc
+        rule %r{--.*$}, Comment::Single
+        rule %r{\[(=*)\[.*?\]\1\]}m, Str::Heredoc
 
         mixin :base
 
-        rule %r('), Str::Single, :sqs
-        rule %r("), Str::Double, :dqs
+        rule %r{'}, Str::Single, :sqs
+        rule %r{"}, Str::Double, :dqs
       end
 
       state :sqs do
-        rule %r('), Str::Single, :pop!
-        rule %r([^']+), Str::Single
+        rule %r{'}, Str::Single, :pop!
+        rule %r{[^']+}, Str::Single
       end
 
       state :interpolation do
@@ -101,9 +99,9 @@ module Rouge
 
       state :dqs do
         rule %r(#\{), Str::Interpol, :interpolation
-        rule %r("), Str::Double, :pop!
+        rule %r{"}, Str::Double, :pop!
         rule %r(#[^{]), Str::Double
-        rule %r([^"#]+), Str::Double
+        rule %r{[^"#]+}, Str::Double
       end
     end
   end

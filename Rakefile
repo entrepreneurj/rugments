@@ -22,12 +22,12 @@ namespace :doc do
 end
 
 CLEAN.include('*.gem')
-task :build => [:clean, :spec] do
+task build: [:clean, :spec] do
   puts
-  sh "gem build rouge.gemspec"
+  sh 'gem build rouge.gemspec'
 end
 
-task :default => :spec
+task default: :spec
 
 Dir.glob(Pathname.new(__FILE__).dirname.join('tasks/*.rake')).each do |f|
   load f

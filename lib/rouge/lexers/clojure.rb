@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Clojure < RegexLexer
-      title "Clojure"
-      desc "The Clojure programming language (clojure.org)"
+      title 'Clojure'
+      desc 'The Clojure programming language (clojure.org)'
 
       tag 'clojure'
       aliases 'clj', 'cljs'
@@ -63,8 +61,8 @@ module Rouge
         )
       end
 
-      identifier = %r([\w!$%*+,<=>?/.-]+)
-      keyword = %r([\w!\#$%*+,<=>?/.-]+)
+      identifier = %r{[\w!$%*+,<=>?/.-]+}
+      keyword = %r{[\w!\#$%*+,<=>?/.-]+}
 
       def name_token(name)
         return Keyword if self.class.keywords.include?(name)
@@ -84,7 +82,6 @@ module Rouge
         rule /'#{keyword}/, Str::Symbol
         rule /::?#{keyword}/, Name::Constant
         rule /\\(.|[a-z]+)/i, Str::Char
-
 
         rule /~@|[`\'#^~&]/, Operator
 

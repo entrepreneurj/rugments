@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class VimL < RegexLexer
-      title "VimL"
-      desc "VimL, the scripting language for the Vim editor (vim.org)"
+      title 'VimL'
+      desc 'VimL, the scripting language for the Vim editor (vim.org)'
       tag 'viml'
       aliases 'vim', 'vimscript', 'ex'
       filenames '*.vim', '*.vba', '.vimrc', '.exrc', '.gvimrc',
@@ -14,7 +12,7 @@ module Rouge
 
       def self.keywords
         load Pathname.new(__FILE__).dirname.join('viml/keywords.rb')
-        self.keywords
+        keywords
       end
 
       state :root do
@@ -27,9 +25,9 @@ module Rouge
         rule /[ \t]+/, Text
 
         # TODO: regexes can have other delimiters
-        rule %r(/(\\\\|\\/|[^\n/])*/), Str::Regex
-        rule %r("(\\\\|\\"|[^\n"])*"), Str::Double
-        rule %r('(\\\\|\\'|[^\n'])*'), Str::Single
+        rule %r{/(\\\\|\\/|[^\n/])*/}, Str::Regex
+        rule %r{"(\\\\|\\"|[^\n"])*"}, Str::Double
+        rule %r{'(\\\\|\\'|[^\n'])*'}, Str::Single
 
         # if it's not a string, it's a comment.
         rule /(?<=\s)"[^-:.%#=*].*?$/, Comment
@@ -39,7 +37,7 @@ module Rouge
         rule /^:/, Punctuation
         rule /[():<>+=!\[\]{}\|,~.-]/, Punctuation
         rule /\b(let|if|else|endif|elseif|fun|function|endfunction)\b/,
-          Keyword
+             Keyword
 
         rule /\b(NONE|bold|italic|underline|dark|light)\b/, Name::Builtin
 
@@ -67,7 +65,7 @@ module Rouge
         shortest, longest = find_likely_mapping(mapping, word)
 
         shortest and word.start_with?(shortest) and
-        longest and longest.start_with?(word)
+          longest and longest.start_with?(word)
       end
 
       # binary search through the mappings to find the one that's likely

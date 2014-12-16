@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     load_const :Javascript, 'javascript.rb'
     class Qml < Javascript
-      title "QML"
+      title 'QML'
       desc 'QML, a UI markup language'
       tag 'qml'
       aliases 'qml'
@@ -65,7 +63,7 @@ module Rouge
         rule /(#{id_with_dots})(\s+)(#{id_with_dots})(\s*)(,?)/ do
           groups Keyword::Type, Text, Name, Text, Punctuation
         end
-        rule /\)/ , Punctuation, :pop!
+        rule /\)/, Punctuation, :pop!
       end
     end
   end

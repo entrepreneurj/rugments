@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Smalltalk < RegexLexer
-      title "Smalltalk"
+      title 'Smalltalk'
       desc 'The Smalltalk programming language'
 
       tag 'smalltalk'
@@ -11,7 +9,7 @@ module Rouge
       filenames '*.st'
       mimetypes 'text/x-smalltalk'
 
-      ops = %r([-+*/\\~<>=|&!?,@%])
+      ops = %r{[-+*/\\~<>=|&!?,@%]}
 
       state :root do
         rule /(<)(\w+:)(.*?)(>)/ do
@@ -40,7 +38,7 @@ module Rouge
           groups Text, Name::Function, Text
         end
 
-        rule %r(^(\s*)(#{ops}+)(\s*)(\w+)(\s*)$) do
+        rule %r{^(\s*)(#{ops}+)(\s*)(\w+)(\s*)$} do
           groups Text, Name::Function, Text, Name::Variable, Text
         end
       end
@@ -61,9 +59,9 @@ module Rouge
         rule /[$]./, Str::Char, :after_object
         rule /#[(]/, Str::Symbol, :parenth
         rule /(\d+r)?-?\d+(\.\d+)?(e-?\d+)?/,
-          Num, :after_object
+             Num, :after_object
         rule /#("[^"]*"|#{ops}+|[\w:]+)/,
-          Str::Symbol, :after_object
+             Str::Symbol, :after_object
       end
 
       state :parenth do
@@ -92,7 +90,7 @@ module Rouge
       state :objects do
         rule /\[/, Punctuation, :block_variables
         rule /(self|super|true|false|nil|thisContext)\b/,
-          Name::Builtin::Pseudo, :after_object
+             Name::Builtin::Pseudo, :after_object
         rule /[A-Z]\w*(?!:)\b/, Name::Class, :after_object
         rule /[a-z]\w*(?!:)\b/, Name::Variable, :after_object
         mixin :literals
@@ -101,7 +99,7 @@ module Rouge
       state :after_object do
         mixin :whitespaces
         rule /(ifTrue|ifFalse|whileTrue|whileFalse|timesRepeat):/,
-          Name::Builtin, :pop!
+             Name::Builtin, :pop!
         rule /new(?!:)\b/, Name::Builtin
         rule /:=|_/, Operator, :pop!
         rule /[a-z]+\w*:/i, Name::Function, :pop!

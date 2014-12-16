@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Dart < RegexLexer
-      title "Dart"
-      desc "The Dart programming language (dartlang.com)"
+      title 'Dart'
+      desc 'The Dart programming language (dartlang.com)'
 
       tag 'dart'
       filenames '*.dart'
@@ -27,11 +25,11 @@ module Rouge
       id = /[a-zA-Z_]\w*/
 
       state :root do
-        rule %r(^
+        rule %r{^
           (\s*(?:[a-zA-Z_][a-zA-Z\d_.\[\]]*\s+)+?) # return arguments
           ([a-zA-Z_][\w]*)                          # method name
           (\s*)(\()                                 # signature start
-        )mx do |m|
+                }mx do |m|
           # TODO: do this better, this shouldn't need a delegation
           delegate Dart, m[1]
           token Name::Function, m[2]
@@ -40,8 +38,8 @@ module Rouge
         end
 
         rule /\s+/, Text
-        rule %r(//.*?$), Comment::Single
-        rule %r(/\*.*?\*/)m, Comment::Multiline
+        rule %r{//.*?$}, Comment::Single
+        rule %r{/\*.*?\*/}m, Comment::Multiline
         rule /"/, Str, :dqs
         rule /'/, Str, :sqs
         rule /r"[^"]*"/, Str::Other

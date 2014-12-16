@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Groovy < RegexLexer
-      title "Groovy"
+      title 'Groovy'
       desc 'The Groovy programming language (groovy.codehaus.org)'
       tag 'groovy'
       filenames '*.groovy'
       mimetypes 'text/x-groovy'
 
-      ws = %r((?:\s|//.*?\n|/[*].*?[*]/)+)
+      ws = %r{(?:\s|//.*?\n|/[*].*?[*]/)+}
 
       def self.keywords
         @keywords ||= Set.new %w(
@@ -37,12 +35,12 @@ module Rouge
       end
 
       state :root do
-        rule %r(^
+        rule %r{^
           (\s*(?:\w[\w\d.\[\]]*\s+)+?) # return arguments
           (\w[\w\d]*) # method name
           (\s*) (\() # signature start
-        )x do |m|
-          delegate self.clone, m[1]
+                }x do |m|
+          delegate clone, m[1]
           token Name::Function, m[2]
           token Text, m[3]
           token Operator, m[4]
@@ -50,8 +48,8 @@ module Rouge
 
         # whitespace
         rule /[^\S\n]+/, Text
-        rule %r(//.*?\n), Comment::Single
-        rule %r(/[*].*?[*]/)m, Comment::Multiline
+        rule %r{//.*?\n}, Comment::Single
+        rule %r{/[*].*?[*]/}m, Comment::Multiline
         rule /@\w[\w\d.]*/, Name::Decorator
         rule /(class|interface)\b/,  Keyword::Declaration, :class
         rule /package\b/, Keyword::Namespace, :import
@@ -59,8 +57,8 @@ module Rouge
 
         rule /"(\\\\|\\"|[^"])*"/, Str::Double
         rule /'(\\\\|\\'|[^'])*'/, Str::Single
-        rule %r(\$/((?!/\$).)*/\$), Str
-        rule %r(/(\\\\|\\"|[^/])*/), Str
+        rule %r{\$/((?!/\$).)*/\$}, Str
+        rule %r{/(\\\\|\\"|[^/])*/}, Str
         rule /'\\.'|'[^\\]'|'\\u[0-9a-f]{4}'/, Str::Char
         rule /(\.)([a-zA-Z_][a-zA-Z0-9_]*)/ do
           groups Operator, Name::Attribute

@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Make < RegexLexer
-      title "Make"
-      desc "Makefile syntax"
+      title 'Make'
+      desc 'Makefile syntax'
       tag 'make'
       aliases 'makefile', 'mf', 'gnumake', 'bsdmake'
       filenames '*.make', 'Makefile', 'makefile', 'Makefile.*', 'GNUmakefile'
@@ -24,7 +22,7 @@ module Rouge
 
       line = /(?:\\.|\\\n|[^\\\n])*/m
 
-      def initialize(opts={})
+      def initialize(opts = {})
         super
         @shell = Shell.new(opts)
       end
@@ -78,7 +76,7 @@ module Rouge
       end
 
       state :block_body do
-        rule /(\t[\t ]*)([@-]?)/ do |m|
+        rule /(\t[\t ]*)([@-]?)/ do |_m|
           groups Text, Punctuation
           push :shell_line
         end

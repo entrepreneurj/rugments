@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class LLVM < RegexLexer
-      title "LLVM"
+      title 'LLVM'
       desc 'The LLVM Compiler Infrastructure (http://llvm.org/)'
       tag 'llvm'
 

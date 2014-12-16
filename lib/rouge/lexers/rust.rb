@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Rust < RegexLexer
-      title "Rust"
+      title 'Rust'
       desc 'The Rust programming language (rust-lang.org)'
       tag 'rust'
       aliases 'rs'
@@ -42,9 +40,9 @@ module Rouge
         @macro_delims.values.all?(&:zero?)
       end
 
-      start {
+      start do
         @macro_delims = { ']' => 0, ')' => 0, '}' => 0 }
-      }
+      end
 
       delim_map = { '[' => ']', '(' => ')', '{' => '}' }
 
@@ -74,8 +72,8 @@ module Rouge
 
       state :whitespace do
         rule /\s+/, Text
-        rule %r(//[^\n]*), Comment
-        rule %r(/[*].*?[*]/)m, Comment::Multiline
+        rule %r{//[^\n]*}, Comment
+        rule %r{/[*].*?[*]/}m, Comment::Multiline
       end
 
       state :root do
@@ -84,8 +82,8 @@ module Rouge
         rule /\b(?:#{Rust.keywords.join('|')})\b/, Keyword
         mixin :has_literals
 
-        rule %r([=-]>), Keyword
-        rule %r(<->), Keyword
+        rule %r{[=-]>}, Keyword
+        rule %r{<->}, Keyword
         rule /[()\[\]{}|,:;]/, Punctuation
         rule /[*!@~&+%^<>=-]/, Operator
 
@@ -144,9 +142,9 @@ module Rouge
         # constants
         rule /\b(?:true|false|nil)\b/, Keyword::Constant
         # characters
-        rule %r(
+        rule %r{
           ' (?: #{escapes} | [^\\] ) '
-        )x, Str::Char
+                }x, Str::Char
 
         rule /"/, Str, :string
 
@@ -155,35 +153,34 @@ module Rouge
         exp = /e[-+]?[0-9_]+/
         flt = /f32|f64/
 
-        rule %r(
+        rule %r{
           [0-9]+
           (#{dot}  #{exp}? #{flt}?
           |#{dot}? #{exp}  #{flt}?
           |#{dot}? #{exp}? #{flt}
           )
-        )x, Num::Float
+                }x, Num::Float
 
-        rule %r(
+        rule %r{
           ( 0b[10_]+
           | 0x[0-9a-fA-F-]+
           | [0-9]+
           ) (u#{size}?|i#{size})?
-        )x, Num::Integer
-
+                }x, Num::Integer
       end
 
       state :string do
         rule /"/, Str, :pop!
         rule escapes, Str::Escape
         rule /%%/, Str::Interpol
-        rule %r(
+        rule %r{
           %
           ( [0-9]+ [$] )?  # Parameter
           [0#+-]*          # Flag
           ( [0-9]+ [$]? )? # Width
           ( [.] [0-9]+ )?  # Precision
           [bcdfiostuxX?]   # Type
-        )x, Str::Interpol
+                }x, Str::Interpol
         rule /[^%"\\]+/m, Str
       end
     end

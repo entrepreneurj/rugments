@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     load_const :SassCommon, 'sass/common.rb'
@@ -7,7 +5,7 @@ module Rouge
     class Sass < SassCommon
       include Indentation
 
-      title "Sass"
+      title 'Sass'
       desc 'The Sass stylesheet language language (sass-lang.com)'
 
       tag 'sass'
@@ -23,12 +21,12 @@ module Rouge
 
       state :content do
         # block comments
-        rule %r(//.*?\n) do
+        rule %r{//.*?\n} do
           token Comment::Single
           pop!; starts_block :single_comment
         end
 
-        rule %r(/[*].*?\n) do
+        rule %r{/[*].*?\n} do
           token Comment::Multiline
           pop!; starts_block :multi_comment
         end
@@ -37,8 +35,8 @@ module Rouge
 
         mixin :content_common
 
-        rule %r(=#{id}), Name::Function, :value
-        rule %r([+]#{id}), Name::Decorator, :value
+        rule %r{=#{id}}, Name::Function, :value
+        rule %r{[+]#{id}}, Name::Decorator, :value
 
         rule /:/, Name::Attribute, :old_style_attr
 

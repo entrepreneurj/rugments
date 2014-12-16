@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   class TextAnalyzer < String
     # Find a shebang.  Returns nil if no shebang is present.

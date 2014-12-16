@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class TeX < RegexLexer
-      title "TeX"
-      desc "The TeX typesetting system"
+      title 'TeX'
+      desc 'The TeX typesetting system'
       tag 'tex'
       aliases 'TeX', 'LaTeX', 'latex'
 
@@ -32,7 +30,7 @@ module Rouge
         rule /\$/, Punctuation, :inlinemath
         rule /\\(begin|end)\{.*?\}/, Name::Tag
 
-        rule /(\\verb)\b(\S)(.*?)(\2)/ do |m|
+        rule /(\\verb)\b(\S)(.*?)(\2)/ do |_m|
           groups Name::Builtin, Keyword::Pseudo, Str::Other, Keyword::Pseudo
         end
 

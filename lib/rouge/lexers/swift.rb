@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Swift < RegexLexer
       tag 'swift'
       filenames '*.swift'
 
-      title "Swift"
+      title 'Swift'
       desc 'Multi paradigm, compiled programming language developed by Apple for iOS and OS X development. (developer.apple.com/swift)'
 
       id_head = /_|(?!\p{Mc})\p{Alpha}|[^\u0000-\uFFFF]/
@@ -46,12 +44,12 @@ module Rouge
 
       state :inline_whitespace do
         rule /\s+/m, Text
-        rule %r((?<re>\/\*(?:(?>[^\/\*\*\/]+)|\g<re>)*\*\/))m, Comment::Multiline
+        rule %r{(?<re>\/\*(?:(?>[^\/\*\*\/]+)|\g<re>)*\*\/)}m, Comment::Multiline
       end
 
       state :whitespace do
         rule /\n+/m, Text, :bol
-        rule %r(\/\/.*?\n), Comment::Single, :bol
+        rule %r{\/\/.*?\n}, Comment::Single, :bol
         mixin :inline_whitespace
       end
 
@@ -60,7 +58,7 @@ module Rouge
         rule /\$(([1-9]\d*)?\d)/, Name::Variable
 
         rule %r{[()\[\]{}:;,?]}, Punctuation
-        rule %r([-/=+*%<>!&|^.~]+), Operator
+        rule %r{[-/=+*%<>!&|^.~]+}, Operator
         rule /@?"/, Str, :dq
         rule /'(\\.|.)'/, Str::Char
         rule /(\d+\*|\d*\.\d+)(e[+-]?[0-9]+)?/i, Num::Float

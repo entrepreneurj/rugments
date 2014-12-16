@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class CommonLisp < RegexLexer
-      title "Common Lisp"
-      desc "The Common Lisp variant of Lisp (common-lisp.net)"
+      title 'Common Lisp'
+      desc 'The Common Lisp variant of Lisp (common-lisp.net)'
       tag 'common_lisp'
       aliases 'cl', 'common-lisp'
 
@@ -227,13 +225,13 @@ module Rouge
 
         # numbers
         rule /[-+]?\d+\.?#{terminated}/, Num::Integer
-        rule %r([-+]?\d+/\d+#{terminated}), Num::Integer
-        rule %r(
+        rule %r{[-+]?\d+/\d+#{terminated}}, Num::Integer
+        rule %r{
           [-+]?
           (\d*\.\d+([defls][-+]?\d+)?
           |\d+(\.\d*)?[defls][-+]?\d+)
           #{terminated}
-        )x, Num::Float
+                }x, Num::Float
 
         # sharpsign strings and characters
         rule /#\\.#{terminated}/, Str::Char

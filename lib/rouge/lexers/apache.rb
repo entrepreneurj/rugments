@@ -3,7 +3,7 @@ require 'yaml'
 module Rouge
   module Lexers
     class Apache < RegexLexer
-      title "Apache"
+      title 'Apache'
       desc 'configuration files for Apache web server'
       tag 'apache'
       mimetypes 'text/x-httpd-conf', 'text/x-apache-conf'
@@ -30,7 +30,6 @@ module Rouge
         rule /[\s\n]+/m, Text
       end
 
-
       state :root do
         mixin :whitespace
 
@@ -49,7 +48,7 @@ module Rouge
         mixin :whitespace
 
         # Match section arguments
-        rule /([^>]+)?(>\n)/ do |m|
+        rule /([^>]+)?(>\n)/ do |_m|
           groups Literal::String::Regex, Punctuation
           pop!
         end

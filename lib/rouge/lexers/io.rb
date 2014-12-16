@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class IO < RegexLexer
       tag 'io'
-      title "Io"
+      title 'Io'
       desc 'The IO programming language (http://iolanguage.com)'
       mimetypes 'text/x-iosrc'
       filenames '*.io'
@@ -26,14 +24,14 @@ module Rouge
 
       state :root do
         rule /\s+/m, Text
-        rule %r(//.*?\n), Comment::Single
-        rule %r(#.*?\n), Comment::Single
-        rule %r(/(\\\n)?[*].*?[*](\\\n)?/)m, Comment::Multiline
-        rule %r(/[+]), Comment::Multiline, :nested_comment
+        rule %r{//.*?\n}, Comment::Single
+        rule %r{#.*?\n}, Comment::Single
+        rule %r{/(\\\n)?[*].*?[*](\\\n)?/}m, Comment::Multiline
+        rule %r{/[+]}, Comment::Multiline, :nested_comment
 
         rule /"(\\\\|\\"|[^"])*"/, Str
 
-        rule %r(:?:=), Keyword
+        rule %r{:?:=}, Keyword
         rule /[()]/, Punctuation
 
         rule %r([-=;,*+><!/|^.%&\[\]{}]), Operator
@@ -52,16 +50,16 @@ module Rouge
           end
         end
 
-        rule %r((\d+[.]?\d*|\d*[.]\d+)(e[+-]?[0-9]+)?)i, Num::Float
+        rule %r{(\d+[.]?\d*|\d*[.]\d+)(e[+-]?[0-9]+)?}i, Num::Float
         rule /\d+/, Num::Integer
 
         rule /@@?/, Keyword
       end
 
       state :nested_comment do
-        rule %r([^/+]+)m, Comment::Multiline
-        rule %r(/[+]), Comment::Multiline, :nested_comment
-        rule %r([+]/), Comment::Multiline, :pop!
+        rule %r{[^/+]+}m, Comment::Multiline
+        rule %r{/[+]}, Comment::Multiline, :nested_comment
+        rule %r{[+]/}, Comment::Multiline, :pop!
       end
     end
   end

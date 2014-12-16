@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class SML < RegexLexer
-      title "SML"
+      title 'SML'
       desc 'Standard ML'
       tag 'sml'
       aliases 'ml'
@@ -26,10 +24,10 @@ module Rouge
       end
 
       id = /[\w']+/i
-      symbol = %r([!%&$#/:<=>?@\\~`^|*+-]+)
+      symbol = %r{[!%&$#/:<=>?@\\~`^|*+-]+}
 
-      def self.analyze_text(text)
-        return 0
+      def self.analyze_text(_text)
+        0
       end
 
       state :whitespace do
@@ -62,7 +60,7 @@ module Rouge
       end
 
       def token_for_final_id(id)
-        if self.class.keywords.include? id or self.class.symbolic_reserved.include? id
+        if self.class.keywords.include?(id) || self.class.symbolic_reserved.include?(id)
           Error
         else
           Name
@@ -97,7 +95,7 @@ module Rouge
         rule /\b(datatype|abstype)\b(?!')/, Keyword::Reserved, :dname
         rule(/(?=\bexception\b(?!'))/) { push :ename }
         rule /\b(functor|include|open|signature|structure)\b(?!')/,
-          Keyword::Reserved, :sname
+             Keyword::Reserved, :sname
         rule /\b(type|eqtype)\b(?!')/, Keyword::Reserved, :tname
 
         rule /'#{id}/, Name::Decorator
@@ -242,7 +240,7 @@ module Rouge
         rule /'[\w']*/, Name::Decorator
         rule /[(]/, Punctuation, :tyvarseq
 
-        rule %r(=(?!#{symbol})) do
+        rule %r{=(?!#{symbol})} do
           token Punctuation
           goto :typbind
         end
@@ -273,7 +271,7 @@ module Rouge
           pop!
         end
 
-        rule %r(=(?!#{symbol})) do
+        rule %r{=(?!#{symbol})} do
           token Punctuation
           goto :datbind
           push :datcon

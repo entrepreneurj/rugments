@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class LiterateHaskell < RegexLexer
-      title "Literate Haskell"
+      title 'Literate Haskell'
       desc 'Literate haskell'
       tag 'literate_haskell'
       aliases 'lithaskell', 'lhaskell', 'lhs'

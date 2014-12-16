@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   class Theme
     include Token::Tokens
 
     class Style < Hash
-      def initialize(theme, hsh={})
+      def initialize(theme, hsh = {})
         super()
         @theme = theme
         merge!(hsh)
@@ -27,16 +25,16 @@ module Rouge
         rendered_rules.each do |rule|
           yield "  #{rule};"
         end
-        yield "}"
+        yield '}'
       end
 
       def rendered_rules(&b)
         return enum_for(:rendered_rules) unless b
         yield "color: #{fg}" if fg
         yield "background-color: #{bg}" if bg
-        yield "font-weight: bold" if self[:bold]
-        yield "font-style: italic" if self[:italic]
-        yield "text-decoration: underline" if self[:underline]
+        yield 'font-weight: bold' if self[:bold]
+        yield 'font-style: italic' if self[:italic]
+        yield 'text-decoration: underline' if self[:underline]
 
         (self[:rules] || []).each(&b)
       end
@@ -47,7 +45,7 @@ module Rouge
     end
 
     @palette = {}
-    def self.palette(arg={})
+    def self.palette(arg = {})
       @palette ||= InheritableHash.new(superclass.palette)
 
       if arg.is_a? Hash
@@ -58,7 +56,7 @@ module Rouge
         when /#[0-9a-f]+/i
           arg
         else
-          @palette[arg] or raise "not in palette: #{arg.inspect}"
+          @palette[arg] || fail("not in palette: #{arg.inspect}")
         end
       end
     end
@@ -68,7 +66,7 @@ module Rouge
       @styles ||= InheritableHash.new(superclass.styles)
     end
 
-    def self.render(opts={}, &b)
+    def self.render(opts = {}, &b)
       new(opts).render(&b)
     end
 
@@ -99,7 +97,7 @@ module Rouge
         styles[Token::Tokens::Text]
       end
 
-      def name(n=nil)
+      def name(n = nil)
         return @name if n.nil?
 
         @name = n.to_s
@@ -117,7 +115,7 @@ module Rouge
   end
 
   module HasModes
-    def mode(arg=:absent)
+    def mode(arg = :absent)
       return @mode if arg == :absent
 
       @modes ||= {}
@@ -127,7 +125,7 @@ module Rouge
     def get_mode(mode)
       return self if self.mode == mode
 
-      new_name = "#{self.name}.#{mode}"
+      new_name = "#{name}.#{mode}"
       Class.new(self) { name(new_name); mode!(mode) }
     end
 
@@ -138,7 +136,7 @@ module Rouge
   end
 
   class CSSTheme < Theme
-    def initialize(opts={})
+    def initialize(opts = {})
       @scope = opts[:scope] || '.highlight'
     end
 
@@ -162,10 +160,11 @@ module Rouge
       self.class.get_style(tok)
     end
 
-  private
+    private
+
     def css_selector(token)
       inflate_token(token).map do |tok|
-        raise "unknown token: #{tok.inspect}" if tok.shortname.nil?
+        fail "unknown token: #{tok.inspect}" if tok.shortname.nil?
 
         single_css_selector(tok)
       end.join(', ')

@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Nginx < RegexLexer
-      title "nginx"
+      title 'nginx'
       desc 'configuration files for the nginx web server (nginx.org)'
       tag 'nginx'
       mimetypes 'text/x-nginx-conf'
@@ -50,7 +48,7 @@ module Rouge
         end
 
         # mimetype
-        rule %r([a-z-]+/[a-z-]+)i, Name::Class
+        rule %r{[a-z-]+/[a-z-]+}i, Name::Class
 
         rule /[0-9]+[kmg]?\b/i, Num::Integer
         rule /(~)(\s*)([^\s{]+)/ do
@@ -60,7 +58,7 @@ module Rouge
         rule /[:=~]/, Punctuation
 
         # pathname
-        rule %r(/#{id}?), Name
+        rule %r{/#{id}?}, Name
 
         rule /[^#\s;{}$\\]+/, Str # catchall
 

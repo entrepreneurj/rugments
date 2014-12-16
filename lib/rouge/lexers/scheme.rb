@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   module Lexers
     class Scheme < RegexLexer
-      title "Scheme"
-      desc "The Scheme variant of Lisp"
+      title 'Scheme'
+      desc 'The Scheme variant of Lisp'
 
       tag 'scheme'
       filenames '*.scm', '*.ss'
@@ -77,7 +75,7 @@ module Rouge
         rule /"(\\\\|\\"|[^"])*"/, Str
         rule /'#{id}/i, Str::Symbol
         rule /#\\([()\/'"._!\$%& ?=+-]{1}|[a-z0-9]+)/i,
-          Str::Char
+             Str::Char
         rule /#t|#f/, Name::Constant
         rule /(?:'|#|`|,@|,|\.)/, Operator
 
@@ -106,7 +104,6 @@ module Rouge
 
         rule(//) { pop! }
       end
-
     end
   end
 end

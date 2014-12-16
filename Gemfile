@@ -8,7 +8,7 @@ gem 'wrong'
 gem 'rake'
 
 # don't try to install redcarpet under jruby
-gem 'redcarpet', :platforms => :ruby
+gem 'redcarpet', platforms: :ruby
 
 group :development do
   gem 'pry'

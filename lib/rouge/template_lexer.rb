@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*- #
-
 module Rouge
   # @abstract
   # A TemplateLexer is one that accepts a :parent option, to specify
@@ -13,7 +11,7 @@ module Rouge
       @parent = option(:parent) || 'html'
       if @parent.is_a? ::String
         lexer_class = Lexer.find(@parent)
-        @parent = lexer_class.new(self.options)
+        @parent = lexer_class.new(options)
       end
     end
 
