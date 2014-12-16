@@ -192,3 +192,11 @@ module Rouge
     end
   end
 end
+
+
+require_relative 'themes/thankful_eyes'
+require_relative 'themes/colorful'
+require_relative 'themes/base16'
+require_relative 'themes/github'
+require_relative 'themes/monokai'
+require_relative 'themes/monokai_sublime'

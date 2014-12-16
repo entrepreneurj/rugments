@@ -1,5 +1,3 @@
 module Rouge
-  def self.version
-    "1.7.7"
-  end
+  VERSION = '1.7.7'
 end

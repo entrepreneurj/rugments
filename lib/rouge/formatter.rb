@@ -1,7 +1,8 @@
 module Rouge
   # A Formatter takes a token stream and formats it for human viewing.
   class Formatter
-    # @private
+    alias_method :render, :format
+
     REGISTRY = {}
 
     # Specify or get the unique tag for this formatter.  This is used
@@ -33,12 +34,6 @@ module Rouge
       out
     end
 
-    # @deprecated Use {#format} instead.
-    def render(tokens)
-      warn 'Formatter#render is deprecated, use #format instead.'
-      format(tokens)
-    end
-
     # @abstract
     # yield strings that, when concatenated, form the formatted output
     def stream(_tokens, &_b)
@@ -46,3 +41,8 @@ module Rouge
     end
   end
 end
+
+
+require_relative 'formatters/html'
+require_relative 'formatters/terminal256'
+require_relative 'formatters/null'

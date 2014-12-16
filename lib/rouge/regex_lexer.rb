@@ -333,14 +333,6 @@ module Rouge
       yield_token(tok, val)
     end
 
-    # @deprecated
-    #
-    # Yield a token with the next matched group.  Subsequent calls
-    # to this method will yield subsequent groups.
-    def group(_tok)
-      fail 'RegexLexer#group is deprecated: use #groups instead'
-    end
-
     # Yield tokens corresponding to the matched groups of the current
     # match.
     def groups(*tokens)

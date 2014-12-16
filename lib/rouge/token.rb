@@ -14,7 +14,7 @@ module Rouge
       end
 
       def [](qualname)
-        return qualname unless qualname.is_a? ::String
+        return qualname unless qualname.is_a?(::String)
 
         Token.cache[qualname]
       end
@@ -69,7 +69,7 @@ module Rouge
         const_set(name, tok)
       end
 
-      # XXX IMPORTANT XXX
+      # IMPORTANT:
       # For compatibility, this list must be kept in sync with
       # pygments.token.STANDARD_TYPES
       # please see https://github.com/jayferd/rouge/wiki/List-of-tokens

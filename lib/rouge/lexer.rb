@@ -2,6 +2,7 @@ require 'strscan'
 require 'cgi'
 require 'set'
 
+
 module Rouge
   # @abstract
   # A lexer transforms text into a stream of `[token, chunk]` pairs.
@@ -128,6 +129,7 @@ module Rouge
 
       class AmbiguousGuess < StandardError
         attr_reader :alternatives
+
         def initialize(alternatives)
           @alternatives = alternatives
         end
@@ -347,23 +349,6 @@ module Rouge
       else
         options(k => v)
       end
-    end
-
-    # @deprecated
-    # Instead of `debug { "foo" }`, simply `puts "foo" if @debug`.
-    #
-    # Leave a debug message if the `:debug` option is set.  The message
-    # is given as a block because some debug messages contain calculated
-    # information that is unnecessary for lexing in the real world.
-    #
-    # Calls to this method should be guarded with "if @debug" for best
-    # performance when debugging is turned off.
-    #
-    # @example
-    #   debug { "hello, world!" } if @debug
-    def debug
-      warn 'Lexer#debug is deprecated.  Simply puts if @debug instead.'
-      puts yield if @debug
     end
 
     # @abstract
