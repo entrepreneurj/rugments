@@ -22,7 +22,7 @@ diff --git a/lib/rouge.rb b/lib/rouge.rb
 index d228e4b..560b687 100644
 --- a/lib/rouge.rb
 +++ b/lib/rouge.rb
-@@ -13,6 +13,7 @@ module Rouge
+@@ -13,6 +13,7 @@ module Rugments
  end
  
  load_dir = Pathname.new(__FILE__).dirname
@@ -35,7 +35,7 @@ index d228e4b..560b687 100644
       assert_guess :source => <<-source
 --- a/lib/rouge.rb
 +++ b/lib/rouge.rb
-@@ -13,6 +13,7 @@ module Rouge
+@@ -13,6 +13,7 @@ module Rugments
  end
  
  load_dir = Pathname.new(__FILE__).dirname

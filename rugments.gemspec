@@ -1,9 +1,9 @@
 require 'rake'
-require_relative 'lib/rouge/version'
+require_relative 'lib/rugments/version'
 
 Gem::Specification.new do |s|
   s.name = 'rugments'
-  s.version = Rouge::VERSION
+  s.version = Rugments::VERSION
   s.authors = ['Jeanine Adkisson', 'Stefan Tatschner']
   s.email = ['jneen@jneen.net', 'stefan@sevenbyte.org']
   s.summary = 'A pure-ruby colorizer based on pygments'
