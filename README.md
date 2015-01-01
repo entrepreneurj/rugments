@@ -1,7 +1,6 @@
 # Rugments
 
-[![Build Status](https://secure.travis-ci.org/jneen/rouge.png)](http://travis-ci.org/jneen/rouge)
-[![Gem Version](https://badge.fury.io/rb/rouge.png)](http://badge.fury.io/rb/rouge)
+[![Gem Version](https://badge.fury.io/rb/rugments.svg)](http://badge.fury.io/rb/rugments)
 
 Rouge is a pure-ruby syntax highlighter.  It can highlight over 60 languages, and output HTML or ANSI 256-color text.  Its HTML output is compatible with stylesheets designed for [pygments][].
 
