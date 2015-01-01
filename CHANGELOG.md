@@ -8,3 +8,4 @@
   * Changed `wrap` to `nowrap` which is `false` by default
   * Ported `linenos`, `linenostart`, `lineanchors` and `anchorlinenos` from pygments
   * See documentation here: http://pygments.org/docs/formatters/#HtmlFormatter
+  * Added `lineanchorsid` to be able to change the url fragment

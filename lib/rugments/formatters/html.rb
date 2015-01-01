@@ -11,6 +11,7 @@ module Rugments
           linenos: nil,
           linenostart: 1,
           lineanchors: false,
+          lineanchorsid: 'L',
           anchorlinenos: false,
           inline_theme: nil
         )
@@ -19,6 +20,7 @@ module Rugments
         @linenos = linenos
         @linenostart = linenostart
         @lineanchors = lineanchors
+        @lineanchorsid = lineanchorsid
         @anchorlinenos = anchorlinenos
         @inline_theme = inline_theme
       end
@@ -87,7 +89,7 @@ module Rugments
       def create_linenos(numbers)
         if @anchorlinenos
           numbers.map! do |number|
-            "<a href=\"#L#{number}\">#{number}</a>"
+            "<a href=\"##{@lineanchorsid}#{number}\">#{number}</a>"
           end
         end
         numbers.join("\n")
@@ -101,9 +103,9 @@ module Rugments
 
             if @linenos == 'inline'
               "<a name=\"L#{number}\"></a>" \
-              "<span class=\"linenos\">#{number}</span>#{line}"
+              "<span class=\"linenos\">#{number}</span><span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}</span>"
             else
-              "<a name=\"L#{number}\"></a>#{line}"
+              "<span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}</span>"
             end
           end
           lines.join("\n")
