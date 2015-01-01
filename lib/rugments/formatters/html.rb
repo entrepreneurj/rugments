@@ -103,9 +103,12 @@ module Rugments
 
             if @linenos == 'inline'
               "<a name=\"L#{number}\"></a>" \
-              "<span class=\"linenos\">#{number}</span><span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}</span>"
+              "<span class=\"linenos\">#{number}</span>" \
+              "<span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}" \
+              '</span>'
             else
-              "<span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}</span>"
+              "<span id=\"#{@lineanchorsid}#{number}\" class=\"line\">#{line}" \
+              '</span>'
             end
           end
           lines.join("\n")
