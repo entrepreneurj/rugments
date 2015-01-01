@@ -3,7 +3,7 @@ require 'cgi'
 module Rugments
   module Formatters
     class HTML < Formatter
-      tag('html')
+      tag 'html'
 
       def initialize(
           nowrap: false,
