@@ -6,21 +6,21 @@ module Rouge
       tag('html')
 
       def initialize(
-          css_class: 'highlight',
+          nowrap: false
+          cssclass: 'highlight',
           linenos: nil,
+          linenostart: 1,
           lineanchors: false,
           anchorlinenos: false,
-          start_line: 1,
           inline_theme: nil,
-          nowrap: false
         )
-        @css_class = css_class
+        @nowrap = nowrap
+        @cssclass = cssclass
         @linenos = linenos
+        @linenostart = linenostart
         @lineanchors = lineanchors
         @anchorlinenos = anchorlinenos
-        @start_line = start_line
         @inline_theme = inline_theme
-        @nowrap = nowrap
       end
 
       def format(tokens)
@@ -40,7 +40,7 @@ module Rouge
         data = process_tokens(tokens)
 
         html = ''
-        html << "<pre class=\"#{@css_class}\"><code>" unless @nowrap
+        html << "<pre class=\"#{@cssclass}\"><code>" unless @nowrap
         html << create_lines(data[:code])
         html << "</code></pre>\n" unless @nowrap
         html
@@ -50,7 +50,7 @@ module Rouge
         data = process_tokens(tokens)
 
         html = ''
-        html << "<div class=\"#{@css_class}\">\n" unless @nowrap
+        html << "<div class=\"#{@cssclass}\">\n" unless @nowrap
         html << "<table><tbody>\n"
         html << "<td class=\"linenos\"><pre>"
         html << create_linenos(data[:numbers])
@@ -73,7 +73,7 @@ module Rouge
           formatted << span(tok, val)
         end
 
-        numbers = (@start_line..num_lines + @start_line - 1).to_a
+        numbers = (@linenostart..num_lines + @linenostart - 1).to_a
 
         # Add an extra line for non-newline-terminated strings.
         unless last_val[-1] == "\n"
@@ -97,7 +97,7 @@ module Rouge
         if @lineanchors
           lines = formatted.split("\n")
           lines = lines.each_with_index.map do |line, index|
-            number = index + @start_line
+            number = index + @linenostart
 
             if @linenos == 'inline'
               "<a name=\"line-#{number}\"></a>" \
@@ -111,7 +111,7 @@ module Rouge
           if @linenos == 'inline'
             lines = formatted.split("\n")
             lines = lines.each_with_index.map do |line, index|
-              number = index + @start_line
+              number = index + @linenostart
               "<span class=\"linenos\">#{number}</span>#{line}"
             end
             lines.join("\n")
