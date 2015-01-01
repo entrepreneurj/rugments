@@ -26,10 +26,10 @@ module Rugments
       end
 
       def format(tokens)
-        case
-        when @linenos == 'table'
+        case @linenos
+        when 'table'
           format_tableized(tokens)
-        when @linenos == 'inline'
+        when 'inline'
           format_untableized(tokens)
         else
           format_untableized(tokens)
