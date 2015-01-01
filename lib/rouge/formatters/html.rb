@@ -2,24 +2,9 @@ require 'cgi'
 
 module Rouge
   module Formatters
-    # Transforms a token stream into HTML output.
     class HTML < Formatter
       tag('html')
 
-      # @option opts [String] :css_class ('highlight')
-      # @option opts [true/false] :line_numbers (false)
-      # @option opts [Rouge::CSSTheme] :inline_theme (nil)
-      # @option opts [true/false] :wrap (true)
-      #
-      # Initialize with options.
-      #
-      # If `:inline_theme` is given, then instead of rendering the
-      # tokens as <span> tags with CSS classes, the styles according to
-      # the given theme will be inlined in "style" attributes.  This is
-      # useful for formats in which stylesheets are not available.
-      #
-      # Content will be wrapped in a tag (`div` if tableized, `pre` if
-      # not) with the given `:css_class` unless `:wrap` is set to `false`.
       def initialize(
           css_class: 'highlight',
           linenos: nil,
@@ -43,6 +28,7 @@ module Rouge
         when @linenos == 'table'
           format_tableized(tokens)
         when @linenos == 'inline'
+          format_untableized(tokens)
         else
           format_untableized(tokens)
         end
@@ -51,14 +37,32 @@ module Rouge
       private
 
       def format_untableized(tokens)
+        data = process_tokens(tokens)
+
         html = ''
         html << "<pre class=\"#{@css_class}\"><code>" unless @nowrap
-        tokens.each { |tok, val| html << span(tok, val) }
+        html << create_lines(data[:code])
         html << "</code></pre>\n" unless @nowrap
         html
       end
 
       def format_tableized(tokens)
+        data = process_tokens(tokens)
+
+        html = ''
+        html << "<div class=\"#{@css_class}\">\n" unless @nowrap
+        html << "<table><tbody>\n"
+        html << "<td class=\"linenos\"><pre>"
+        html << create_linenos(data[:numbers])
+        html << "</pre></td>\n"
+        html << "<td class=\"lines\"><pre><code>"
+        html << create_lines(data[:code])
+        html << "</code></pre></td>\n"
+        html << "</tbody></table>\n"
+        html << "</div>\n" unless @nowrap
+      end
+
+      def process_tokens(tokens)
         num_lines = 0
         last_val = ''
         formatted = ''
@@ -77,22 +81,13 @@ module Rouge
           formatted << span(Token::Tokens::Text::Whitespace, "\n")
         end
 
-        html = "<div class=\"#{@css_class}\">\n" unless @nowrap
-        html << "<table><tbody>\n"
-        html << "<td class=\"linenos\"><pre>"
-        html << create_linenos(numbers)
-        html << "</pre></td>\n"
-        html << "<td class=\"lines\"><pre><code>"
-        html << create_lines(formatted)
-        html << "</code></pre></td>\n"
-        html << "</tbody></table>\n"
-        html << "</div>\n" unless @nowrap
+        { numbers: numbers, code: formatted }
       end
 
       def create_linenos(numbers)
         if @anchorlinenos
           numbers.map! do |number|
-            number = "<a href=\"#line-#{number}\">#{number}</a>"
+            "<a href=\"#line-#{number}\">#{number}</a>"
           end
         end
         numbers.join("\n")
@@ -103,11 +98,26 @@ module Rouge
           lines = formatted.split("\n")
           lines = lines.each_with_index.map do |line, index|
             number = index + @start_line
-            line = "<a name=\"line-#{number}\"></a>#{line}"
+
+            if @linenos == 'inline'
+              "<a name=\"line-#{number}\"></a>" \
+              "<span class=\"linenos\">#{number}</span>#{line}"
+            else
+              "<a name=\"line-#{number}\"></a>#{line}"
+            end
           end
           lines.join("\n")
         else
-          formatted
+          if @linenos == 'inline'
+            lines = formatted.split("\n")
+            lines = lines.each_with_index.map do |line, index|
+              number = index + @start_line
+              "<span class=\"linenos\">#{number}</span>#{line}"
+            end
+            lines.join("\n")
+          else
+            formatted
+          end
         end
       end
 
