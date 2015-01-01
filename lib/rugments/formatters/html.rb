@@ -87,7 +87,7 @@ module Rugments
       def create_linenos(numbers)
         if @anchorlinenos
           numbers.map! do |number|
-            "<a href=\"#line-#{number}\">#{number}</a>"
+            "<a href=\"#L#{number}\">#{number}</a>"
           end
         end
         numbers.join("\n")
@@ -100,10 +100,10 @@ module Rugments
             number = index + @linenostart
 
             if @linenos == 'inline'
-              "<a name=\"line-#{number}\"></a>" \
+              "<a name=\"L#{number}\"></a>" \
               "<span class=\"linenos\">#{number}</span>#{line}"
             else
-              "<a name=\"line-#{number}\"></a>#{line}"
+              "<a name=\"L#{number}\"></a>#{line}"
             end
           end
           lines.join("\n")
