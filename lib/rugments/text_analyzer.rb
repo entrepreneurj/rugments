@@ -4,8 +4,9 @@ module Rugments
     def shebang
       return @shebang if instance_variable_defined?(:@shebang)
 
-      self =~ /\A\s*#!(.*)$/
-      @shebang = Regexp.last_match[1]
+      if self =~ /\A\s*#!(.*)$/
+        @shebang = Regexp.last_match[1]
+      end
     end
 
     # Check if the given shebang is present.
@@ -20,11 +21,10 @@ module Rugments
     def doctype
       return @doctype if instance_variable_defined?(:@doctype)
 
-      self =~ %r{\A\s*
-        (?:<\?.*?\?>\s*)? # possible <?xml...?> tag
-        <!DOCTYPE\s+(.+?)>
-            }xm
-      @doctype = Regexp.last_match[1]
+      # possible <?xml...?> tag
+      if self =~ /\A\s*(?:<\?.*?\?>\s*)?<!DOCTYPE\s+(.+?)>/
+        @doctype = Regexp.last_match[1]
+      end
     end
 
     # Check if the doctype matches a given regexp or string
