@@ -41,27 +41,28 @@ module Rugments
       def format_untableized(tokens)
         data = process_tokens(tokens)
 
-        html = ''
+        html = []
         html << "<pre class=\"#{@cssclass}\"><code>" unless @nowrap
         html << create_lines(data[:code])
         html << "</code></pre>\n" unless @nowrap
-        html
+        html.join("\n")
       end
 
       def format_tableized(tokens)
         data = process_tokens(tokens)
 
-        html = ''
-        html << "<div class=\"#{@cssclass}\">\n" unless @nowrap
-        html << "<table><tbody>\n"
+        html = []
+        html << "<div class=\"#{@cssclass}\">" unless @nowrap
+        html << "<table><tbody>"
         html << "<td class=\"linenos\"><pre>"
         html << create_linenos(data[:numbers])
-        html << "</pre></td>\n"
+        html << "</pre></td>"
         html << "<td class=\"lines\"><pre><code>"
         html << create_lines(data[:code])
-        html << "</code></pre></td>\n"
-        html << "</tbody></table>\n"
-        html << "</div>\n" unless @nowrap
+        html << "</code></pre></td>"
+        html << "</tbody></table>"
+        html << "</div>" unless @nowrap
+        html.join("\n")
       end
 
       def process_tokens(tokens)
