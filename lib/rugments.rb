@@ -1,6 +1,5 @@
 require_relative 'rugments/version'
 require_relative 'rugments/util'
-require_relative 'rugments/text_analyzer'
 require_relative 'rugments/token'
 require_relative 'rugments/lexer'
 require_relative 'rugments/formatter'
