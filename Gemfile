@@ -20,4 +20,5 @@ group :development do
   # for visual tests
   gem 'sinatra'
   gem 'shotgun'
+  gem 'ruby-prof'
 end
