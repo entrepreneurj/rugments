@@ -25,40 +25,40 @@ module Rugments
         @inline_theme = inline_theme
       end
 
-      def format(tokens)
+      def render(tokens)
         case @linenos
         when 'table'
-          format_tableized(tokens)
+          render_tableized(tokens)
         when 'inline'
-          format_untableized(tokens)
+          render_untableized(tokens)
         else
-          format_untableized(tokens)
+          render_untableized(tokens)
         end
       end
 
       private
 
-      def format_untableized(tokens)
+      def render_untableized(tokens)
         data = process_tokens(tokens)
 
         html = []
         html << "<pre class=\"#{@cssclass}\"><code>" unless @nowrap
-        html << create_lines(data[:code])
+        html << wrap_lines(data[:code])
         html << "</code></pre>\n" unless @nowrap
         html.join("\n")
       end
 
-      def format_tableized(tokens)
+      def render_tableized(tokens)
         data = process_tokens(tokens)
 
         html = []
         html << "<div class=\"#{@cssclass}\">" unless @nowrap
         html << "<table><tbody>"
         html << "<td class=\"linenos\"><pre>"
-        html << create_linenos(data[:numbers])
+        html << wrap_linenos(data[:numbers])
         html << "</pre></td>"
         html << "<td class=\"lines\"><pre><code>"
-        html << create_lines(data[:code])
+        html << wrap_lines(data[:code])
         html << "</code></pre></td>"
         html << "</tbody></table>"
         html << "</div>" unless @nowrap
@@ -68,12 +68,12 @@ module Rugments
       def process_tokens(tokens)
         num_lines = 0
         last_val = ''
-        formatted = ''
+        rendered = ''
 
         tokens.each do |tok, val|
           last_val = val
           num_lines += val.scan(/\n/).size
-          formatted << span(tok, val)
+          rendered << span(tok, val)
         end
 
         numbers = (@linenostart..num_lines + @linenostart - 1).to_a
@@ -81,13 +81,13 @@ module Rugments
         # Add an extra line for non-newline-terminated strings.
         unless last_val[-1] == "\n"
           num_lines += 1
-          formatted << span(Token::Tokens::Text::Whitespace, "\n")
+          rendered << span(Token::Tokens::Text::Whitespace, "\n")
         end
 
-        { numbers: numbers, code: formatted }
+        { numbers: numbers, code: rendered }
       end
 
-      def create_linenos(numbers)
+      def wrap_linenos(numbers)
         if @anchorlinenos
           numbers.map! do |number|
             "<a href=\"##{@lineanchorsid}#{number}\">#{number}</a>"
@@ -96,9 +96,9 @@ module Rugments
         numbers.join("\n")
       end
 
-      def create_lines(formatted)
+      def wrap_lines(rendered)
         if @lineanchors
-          lines = formatted.split("\n")
+          lines = rendered.split("\n")
           lines = lines.each_with_index.map do |line, index|
             number = index + @linenostart
 
@@ -115,14 +115,14 @@ module Rugments
           lines.join("\n")
         else
           if @linenos == 'inline'
-            lines = formatted.split("\n")
+            lines = rendered.split("\n")
             lines = lines.each_with_index.map do |line, index|
               number = index + @linenostart
               "<span class=\"linenos\">#{number}</span>#{line}"
             end
             lines.join("\n")
           else
-            formatted
+            rendered
           end
         end
       end
