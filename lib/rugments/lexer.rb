@@ -2,18 +2,56 @@ require 'strscan'
 require 'cgi'
 require 'set'
 
-
 module Rugments
-  # @abstract
-  # A lexer transforms text into a stream of `[token, chunk]` pairs.
   class Lexer
     include Token::Tokens
 
     class << self
-      # Lexes `stream` with the given options.  The lex is delegated to a
-      # new instance.
-      #
-      # @see #lex
+      def title(val = nil)
+        val = tag.capitalize if val.nil?
+        @title ||= val
+      end
+
+      def desc(val = nil)
+        if val.nil?
+          @desc
+        else
+          @desc = val
+        end
+      end
+
+      def aliases(*vals)
+        vals.map!(&:to_s)
+        vals.each { |arg| Lexer.register(arg, self) }
+        @aliases ||= []
+        @aliases += vals
+      end
+
+      def filenames(*vals)
+        @filenames ||= []
+        @filenames += vals
+      end
+
+      def mimetypes(*vals)
+        @mimetypes ||= []
+        @mimetypes += vals
+      end
+
+      def tag(value = nil)
+        return @tag if value.nil?
+
+        @tag = value.to_sym
+        Lexer.register(@tag, self)
+      end
+
+      def assert_utf8!(str)
+        return if %w(US-ASCII UTF-8 ASCII-8BIT).include?(str.encoding.name)
+        fail EncodingError.new(
+          "Bad encoding: #{str.encoding.names.join(',')}. " \
+          'Please convert your string to UTF-8.'
+        )
+      end
+
       def lex(stream, opts = {}, &b)
         new(opts).lex(stream, &b)
       end
@@ -24,9 +62,12 @@ module Rugments
         @default_options
       end
 
-      # Given a string, return the correct lexer class.
+      def all
+        registry.values.uniq
+      end
+
       def find(name)
-        registry[name.to_s]
+        registry[name.to_sym]
       end
 
       # Find a lexer, with fancy shiny features.
@@ -54,30 +95,13 @@ module Rugments
         opts = Hash[opts]
 
         lexer_class = case name
-        when 'guess', nil
-          guess(source: code, mimetype: opts[:mimetype])
-        when String
-          find(name)
-        end
+                      when 'guess', nil
+                        guess(source: code, mimetype: opts[:mimetype])
+                      when String
+                        find(name)
+                      end
 
         lexer_class && lexer_class.new(opts)
-      end
-
-      # Specify or get this lexer's title. Meant to be human-readable.
-      def title(t=nil)
-        if t.nil?
-          t = tag.capitalize
-        end
-        @title ||= t
-      end
-
-      # Specify or get this lexer's description.
-      def desc(arg = :absent)
-        if arg == :absent
-          @desc
-        else
-          @desc = arg
-        end
       end
 
       # Specify or get the path name containing a small demo for
@@ -93,11 +117,6 @@ module Rugments
         return @demo = arg unless arg == :absent
 
         @demo = File.read(demo_file, encoding: 'utf-8')
-      end
-
-      # @return a list of all lexers.
-      def all
-        registry.values.uniq
       end
 
       # Guess which lexer to use based on a hash of info.
@@ -214,13 +233,13 @@ module Rugments
 
       def best_by_source(lexers, source, threshold = 0)
         source = case source
-        when String
-          source
-        when ->(s) { s.respond_to? :read }
-          source.read
-        else
-          fail 'invalid source'
-        end
+                 when String
+                   source
+                 when ->(s) { s.respond_to? :read }
+                   source.read
+                 else
+                   fail 'invalid source'
+                 end
 
         assert_utf8!(source)
 
@@ -243,72 +262,8 @@ module Rugments
 
       protected
 
-      # @private
       def register(name, lexer)
-        registry[name.to_s] = lexer
-      end
-
-      public
-
-      # Used to specify or get the canonical name of this lexer class.
-      #
-      # @example
-      #   class MyLexer < Lexer
-      #     tag 'foo'
-      #   end
-      #
-      #   MyLexer.tag # => 'foo'
-      #
-      #   Lexer.find('foo') # => MyLexer
-      def tag(t = nil)
-        return @tag if t.nil?
-
-        @tag = t.to_s
-        Lexer.register(@tag, self)
-      end
-
-      # Used to specify alternate names this lexer class may be found by.
-      #
-      # @example
-      #   class Erb < Lexer
-      #     tag 'erb'
-      #     aliases 'eruby', 'rhtml'
-      #   end
-      #
-      #   Lexer.find('eruby') # => Erb
-      def aliases(*args)
-        args.map!(&:to_s)
-        args.each { |arg| Lexer.register(arg, self) }
-        (@aliases ||= []).concat(args)
-      end
-
-      # Specify a list of filename globs associated with this lexer.
-      #
-      # @example
-      #   class Ruby < Lexer
-      #     filenames '*.rb', '*.ruby', 'Gemfile', 'Rakefile'
-      #   end
-      def filenames(*fnames)
-        (@filenames ||= []).concat(fnames)
-      end
-
-      # Specify a list of mimetypes associated with this lexer.
-      #
-      # @example
-      #   class Html < Lexer
-      #     mimetypes 'text/html', 'application/xhtml+xml'
-      #   end
-      def mimetypes(*mts)
-        (@mimetypes ||= []).concat(mts)
-      end
-
-      # @private
-      def assert_utf8!(str)
-        return if %w(US-ASCII UTF-8 ASCII-8BIT).include? str.encoding.name
-        fail EncodingError.new(
-          "Bad encoding: #{str.encoding.names.join(',')}. " \
-          'Please convert your string to UTF-8.'
-        )
+        registry[name.to_sym] = lexer
       end
 
       private
@@ -351,19 +306,12 @@ module Rugments
       end
     end
 
-    # @abstract
-    #
-    # Called after each lex is finished.  The default implementation
-    # is a noop.
-    def reset!
-    end
-
     # Given a string, yield [token, chunk] pairs.  If no block is given,
     # an enumerator is returned.
     #
     # @option opts :continue
     #   Continue the lex from the previous state (i.e. don't call #reset!)
-    def lex(string, opts = {}, &b)
+    def lex(string, opts = {})
       return enum_for(:lex, string) unless block_given?
 
       Lexer.assert_utf8!(string)
@@ -381,42 +329,17 @@ module Rugments
           next
         end
 
-        b.call(last_token, last_val) if last_token
+        yield last_token, last_val if last_token
         last_token = tok
         last_val = val
       end
 
-      b.call(last_token, last_val) if last_token
+      yield last_token, last_val if last_token
     end
 
     # delegated to {Lexer.tag}
     def tag
       self.class.tag
-    end
-
-    # @abstract
-    #
-    # Yield `[token, chunk]` pairs, given a prepared input stream.  This
-    # must be implemented.
-    #
-    # @param [StringScanner] stream
-    #   the stream
-    def stream_tokens(_stream, &_b)
-      fail 'abstract'
-    end
-
-    # @abstract
-    #
-    # Return a number between 0 and 1 indicating the likelihood that
-    # the text given should be lexed with this lexer.  The default
-    # implementation returns 0.  Values under 0.5 will only be used
-    # to disambiguate filename or mimetype matches.
-    #
-    # @param [TextAnalyzer] text
-    #   the text to be analyzed, with a couple of handy methods on it,
-    #   like {TextAnalyzer#shebang?} and {TextAnalyzer#doctype?}
-    def self.analyze_text(_text)
-      0
     end
   end
 
