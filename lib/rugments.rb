@@ -11,23 +11,14 @@ require_relative 'rugments/theme'
 module Rugments
   module_function
 
-  # Highlight some text with a given lexer and formatter.
-  #
-  # @example
-  #   Rouge.highlight('@foo = 1', 'ruby', 'html')
-  #   Rouge.highlight('var foo = 1;', 'js', 'terminal256')
-  #
-  #   # streaming - chunks become available as they are lexed
-  #   Rouge.highlight(large_string, 'ruby', 'html') do |chunk|
-  #     $stdout.print chunk
-  #   end
-  def highlight(text, lexer, formatter, &b)
+  # TODO: Make this basic method more powerful!
+  def highlight(text, lexer, formatter)
     lexer = Lexer.find(lexer) unless lexer.respond_to?(:lex)
     fail "unknown lexer #{lexer}" unless lexer
 
-    formatter = Formatter.find(formatter) unless formatter.respond_to?(:format)
+    formatter = Formatter.find(formatter) unless formatter.respond_to?(:render)
     fail "unknown formatter #{formatter}" unless formatter
 
-    formatter.format(lexer.lex(text), &b)
+    formatter.render(lexer.lex(text))
   end
 end
