@@ -14,7 +14,7 @@ module Rugments
         @theme = Theme.find(@theme) if @theme.is_a? String
       end
 
-      def stream(tokens, &_b)
+      def stream(tokens)
         tokens.each do |tok, val|
           escape = escape_sequence(tok)
           yield escape.style_string

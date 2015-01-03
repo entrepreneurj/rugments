@@ -4,10 +4,7 @@ module Rugments
     class Null < Formatter
       tag 'null'
 
-      def initialize(*)
-      end
-
-      def stream(tokens, &_b)
+      def stream(tokens)
         tokens.each do |tok, val|
           yield "#{tok} #{val.inspect}\n"
         end
