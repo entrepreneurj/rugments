@@ -19,6 +19,5 @@ module Rugments
   end
 end
 
-require_relative 'formatters/html'
-require_relative 'formatters/terminal256'
-require_relative 'formatters/null'
+lib_path = File.expand_path(File.dirname(__FILE__))
+Dir.glob(File.join(lib_path, 'formatters/*.rb')) { |f| require_relative f }
