@@ -1,9 +1,9 @@
 require_relative 'rugments/version'
-require_relative 'rugments/util'
-require_relative 'rugments/token'
-require_relative 'rugments/lexer'
-require_relative 'rugments/formatter'
-require_relative 'rugments/theme'
+require_relative 'rugments/utils'
+require_relative 'rugments/tokens'
+require_relative 'rugments/lexers'
+require_relative 'rugments/formatters'
+require_relative 'rugments/themes'
 
 module Rugments
   module_function
