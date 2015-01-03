@@ -62,119 +62,119 @@ module Rugments
         end
       end
     end
+  end
 
-    module Tokens
-      def self.token(name, shortname, &b)
-        tok = Token.make_token(name, shortname, &b)
-        const_set(name, tok)
-      end
-
-      # IMPORTANT:
-      # For compatibility, this list must be kept in sync with
-      # pygments.token.STANDARD_TYPES
-      # please see https://github.com/jayferd/rouge/wiki/List-of-tokens
-      token :Text, '' do
-        token :Whitespace, 'w'
-      end
-
-      token :Error, 'err'
-      token :Other, 'x'
-
-      token :Keyword, 'k' do
-        token :Constant,    'kc'
-        token :Declaration, 'kd'
-        token :Namespace,   'kn'
-        token :Pseudo,      'kp'
-        token :Reserved,    'kr'
-        token :Type,        'kt'
-        token :Variable,    'kv'
-      end
-
-      token :Name, 'n' do
-        token :Attribute,    'na'
-        token :Builtin,      'nb' do
-          token :Pseudo,     'bp'
-        end
-        token :Class,        'nc'
-        token :Constant,     'no'
-        token :Decorator,    'nd'
-        token :Entity,       'ni'
-        token :Exception,    'ne'
-        token :Function,     'nf'
-        token :Property,     'py'
-        token :Label,        'nl'
-        token :Namespace,    'nn'
-        token :Other,        'nx'
-        token :Tag,          'nt'
-        token :Variable,     'nv' do
-          token :Class,      'vc'
-          token :Global,     'vg'
-          token :Instance,   'vi'
-        end
-      end
-
-      token :Literal,      'l' do
-        token :Date,       'ld'
-
-        token :String,     's' do
-          token :Backtick, 'sb'
-          token :Char,     'sc'
-          token :Doc,      'sd'
-          token :Double,   's2'
-          token :Escape,   'se'
-          token :Heredoc,  'sh'
-          token :Interpol, 'si'
-          token :Other,    'sx'
-          token :Regex,    'sr'
-          token :Single,   's1'
-          token :Symbol,   'ss'
-        end
-
-        token :Number,     'm' do
-          token :Float,    'mf'
-          token :Hex,      'mh'
-          token :Integer,  'mi' do
-            token :Long,   'il'
-          end
-          token :Oct,      'mo'
-          token :Bin,      'mb'
-          token :Other,    'mx'
-        end
-      end
-
-      token :Operator, 'o' do
-        token :Word,   'ow'
-      end
-
-      token :Punctuation, 'p' do
-        token :Indicator, 'pi'
-      end
-
-      token :Comment,     'c' do
-        token :Doc,       'cd'
-        token :Multiline, 'cm'
-        token :Preproc,   'cp'
-        token :Single,    'c1'
-        token :Special,   'cs'
-      end
-
-      token :Generic,      'g' do
-        token :Deleted,    'gd'
-        token :Emph,       'ge'
-        token :Error,      'gr'
-        token :Heading,    'gh'
-        token :Inserted,   'gi'
-        token :Output,     'go'
-        token :Prompt,     'gp'
-        token :Strong,     'gs'
-        token :Subheading, 'gu'
-        token :Traceback,  'gt'
-        token :Lineno,     'gl'
-      end
-
-      # convenience
-      Num = Literal::Number
-      Str = Literal::String
+  module Tokens
+    def self.token(name, shortname, &b)
+      tok = Token.make_token(name, shortname, &b)
+      const_set(name, tok)
     end
+
+    # IMPORTANT:
+    # For compatibility, this list must be kept in sync with
+    # pygments.token.STANDARD_TYPES
+    # please see https://github.com/jayferd/rouge/wiki/List-of-tokens
+    token :Text, '' do
+      token :Whitespace, 'w'
+    end
+
+    token :Error, 'err'
+    token :Other, 'x'
+
+    token :Keyword, 'k' do
+      token :Constant,    'kc'
+      token :Declaration, 'kd'
+      token :Namespace,   'kn'
+      token :Pseudo,      'kp'
+      token :Reserved,    'kr'
+      token :Type,        'kt'
+      token :Variable,    'kv'
+    end
+
+    token :Name, 'n' do
+      token :Attribute,    'na'
+      token :Builtin,      'nb' do
+        token :Pseudo,     'bp'
+      end
+      token :Class,        'nc'
+      token :Constant,     'no'
+      token :Decorator,    'nd'
+      token :Entity,       'ni'
+      token :Exception,    'ne'
+      token :Function,     'nf'
+      token :Property,     'py'
+      token :Label,        'nl'
+      token :Namespace,    'nn'
+      token :Other,        'nx'
+      token :Tag,          'nt'
+      token :Variable,     'nv' do
+        token :Class,      'vc'
+        token :Global,     'vg'
+        token :Instance,   'vi'
+      end
+    end
+
+    token :Literal,      'l' do
+      token :Date,       'ld'
+
+      token :String,     's' do
+        token :Backtick, 'sb'
+        token :Char,     'sc'
+        token :Doc,      'sd'
+        token :Double,   's2'
+        token :Escape,   'se'
+        token :Heredoc,  'sh'
+        token :Interpol, 'si'
+        token :Other,    'sx'
+        token :Regex,    'sr'
+        token :Single,   's1'
+        token :Symbol,   'ss'
+      end
+
+      token :Number,     'm' do
+        token :Float,    'mf'
+        token :Hex,      'mh'
+        token :Integer,  'mi' do
+          token :Long,   'il'
+        end
+        token :Oct,      'mo'
+        token :Bin,      'mb'
+        token :Other,    'mx'
+      end
+    end
+
+    token :Operator, 'o' do
+      token :Word,   'ow'
+    end
+
+    token :Punctuation, 'p' do
+      token :Indicator, 'pi'
+    end
+
+    token :Comment,     'c' do
+      token :Doc,       'cd'
+      token :Multiline, 'cm'
+      token :Preproc,   'cp'
+      token :Single,    'c1'
+      token :Special,   'cs'
+    end
+
+    token :Generic,      'g' do
+      token :Deleted,    'gd'
+      token :Emph,       'ge'
+      token :Error,      'gr'
+      token :Heading,    'gh'
+      token :Inserted,   'gi'
+      token :Output,     'go'
+      token :Prompt,     'gp'
+      token :Strong,     'gs'
+      token :Subheading, 'gu'
+      token :Traceback,  'gt'
+      token :Lineno,     'gl'
+    end
+
+    # convenience
+    Num = Literal::Number
+    Str = Literal::String
   end
 end

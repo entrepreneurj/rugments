@@ -4,7 +4,7 @@ require 'set'
 
 module Rugments
   class Lexer
-    include Token::Tokens
+    include Tokens
 
     class << self
       def title(val = nil)

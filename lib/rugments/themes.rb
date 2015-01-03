@@ -1,6 +1,6 @@
 module Rugments
   class Theme
-    include Token::Tokens
+    include Tokens
 
     class Style < Hash
       def initialize(theme, hsh = {})
