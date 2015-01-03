@@ -20,11 +20,9 @@ module Rugments
     # Return the contents of the doctype tag if present, nil otherwise.
     def doctype
       return @doctype if instance_variable_defined?(:@doctype)
+      return nil unless self =~ /\A\s*(?:<\?.*?\?>\s*)?<!DOCTYPE\s+(.+?)>/
 
-      # possible <?xml...?> tag
-      if self =~ /\A\s*(?:<\?.*?\?>\s*)?<!DOCTYPE\s+(.+?)>/
-        @doctype = Regexp.last_match[1]
-      end
+      @doctype = Regexp.last_match[1]
     end
 
     # Check if the doctype matches a given regexp or string
@@ -42,17 +40,19 @@ module Rugments
       true
     end
   end
-  
+
   class InheritableHash < Hash
+    alias_method :own_keys, :keys
+
     def initialize(parent = nil)
       @parent = parent
     end
 
     def [](k)
-      _sup = super
-      return _sup if own_keys.include?(k)
+      sup = super
+      return sup if own_keys.include?(k)
 
-      _sup || parent[k]
+      sup || parent[k]
     end
 
     def parent
@@ -63,13 +63,12 @@ module Rugments
       super || parent.include?(k)
     end
 
-    def each(&b)
+    def each
       keys.each do |k|
-        b.call(k, self[k])
+        yield k, self[k]
       end
     end
 
-    alias_method :own_keys, :keys
     def keys
       keys = own_keys.concat(parent.keys)
       keys.uniq!
@@ -79,6 +78,7 @@ module Rugments
 
   class InheritableList
     include Enumerable
+    alias_method :<<, :push
 
     def initialize(parent = nil)
       @parent = parent
@@ -102,7 +102,6 @@ module Rugments
     def push(o)
       own_entries << o
     end
-    alias_method :<<, :push
   end
 
   # shared methods for some indentation-sensitive lexers

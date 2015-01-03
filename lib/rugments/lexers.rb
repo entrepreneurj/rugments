@@ -52,10 +52,6 @@ module Rugments
         )
       end
 
-      def lex(stream, opts = {}, &b)
-        new(opts).lex(stream, &b)
-      end
-
       def default_options(o = {})
         @default_options ||= {}
         @default_options.merge!(o)
@@ -106,15 +102,15 @@ module Rugments
 
       # Specify or get the path name containing a small demo for
       # this lexer (can be overriden by {demo}).
-      def demo_file(arg = :absent)
-        return @demo_file = Pathname.new(arg) unless arg == :absent
+      def demo_file(arg = nil)
+        return @demo_file = Pathname.new(arg) unless arg.nil?
 
         @demo_file = Pathname.new(__FILE__).dirname.join('demos', tag)
       end
 
       # Specify or get a small demo string for this lexer
-      def demo(arg = :absent)
-        return @demo = arg unless arg == :absent
+      def demo(arg = nil)
+        return @demo = arg unless arg.nil?
 
         @demo = File.read(demo_file, encoding: 'utf-8')
       end
@@ -273,7 +269,7 @@ module Rugments
       end
     end
 
-    # -*- instance methods -*- #
+    # instance methods
 
     # Create a new lexer with the given options.  Individual lexers may
     # specify extra options.  The only current globally accepted option
