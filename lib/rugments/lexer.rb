@@ -722,13 +722,13 @@ module Rugments
     # {StateDSL}.
     def push(state_name = nil, &b)
       push_state = if state_name
-        get_state(state_name)
-      elsif block_given?
-        StateDSL.new(b.inspect, &b).to_state(self.class)
-      else
-        # use the top of the stack by default
-        state
-      end
+                     get_state(state_name)
+                   elsif block_given?
+                     StateDSL.new(b.inspect, &b).to_state(self.class)
+                   else
+                     # use the top of the stack by default
+                     state
+                   end
 
       puts "    pushing #{push_state.name}" if @debug
       stack.push(push_state)
