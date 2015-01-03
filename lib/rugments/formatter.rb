@@ -16,11 +16,6 @@ module Rugments
     def self.find(tag)
       REGISTRY[tag]
     end
-
-    # Format a token stream.  Delegates to {#format}.
-    def self.format(tokens, opts = {}, &b)
-      new(opts).format(tokens, &b)
-    end
   end
 end
 
