@@ -5,7 +5,7 @@ module Rugments
       desc 'The R statistics language (r-project.org)'
       tag 'r'
       aliases 'r', 'R', 's', 'S'
-      filenames '*.R', '*.S', '.Rhistory', '.Rprofile'
+      filenames '*.R', '.Rhistory', '.Rprofile'
       mimetypes 'text/x-r-source', 'text/x-r', 'text/x-R'
 
       mimetypes 'text/x-r', 'application/x-r'
@@ -18,7 +18,6 @@ module Rugments
 
       def self.analyze_text(text)
         return 1 if text.shebang? 'Rscript'
-        return 0.1 if text.include? '->'
       end
 
       state :root do
