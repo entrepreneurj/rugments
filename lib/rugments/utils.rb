@@ -78,7 +78,6 @@ module Rugments
 
   class InheritableList
     include Enumerable
-    alias_method :<<, :push
 
     def initialize(parent = nil)
       @parent = parent
@@ -102,6 +101,8 @@ module Rugments
     def push(o)
       own_entries << o
     end
+    
+    alias_method :<<, :push
   end
 
   # shared methods for some indentation-sensitive lexers
