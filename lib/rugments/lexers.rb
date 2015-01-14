@@ -100,6 +100,10 @@ module Rugments
         lexer_class && lexer_class.new(opts)
       end
 
+      def lex(raw, opts = {})
+        new(opts).lex(raw)
+      end
+
       # Specify or get the path name containing a small demo for
       # this lexer (can be overriden by {demo}).
       def demo_file(arg = nil)
