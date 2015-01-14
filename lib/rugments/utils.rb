@@ -109,7 +109,8 @@ module Rugments
   module Indentation
     def reset!
       super
-      @block_state = @block_indentation = nil
+      @block_state = nil
+      @block_indentation = nil
     end
 
     # push a state for the next indented block
