@@ -298,8 +298,8 @@ module Rugments
     end
 
     # get or specify one option for this lexer
-    def option(k, v = :absent)
-      if v == :absent
+    def option(k, v = nil)
+      if v.nil?
         options[k]
       else
         options(k => v)
