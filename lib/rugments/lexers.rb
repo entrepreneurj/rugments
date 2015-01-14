@@ -104,21 +104,6 @@ module Rugments
         new(opts).lex(raw)
       end
 
-      # Specify or get the path name containing a small demo for
-      # this lexer (can be overriden by {demo}).
-      def demo_file(arg = nil)
-        return @demo_file = Pathname.new(arg) unless arg.nil?
-
-        @demo_file = Pathname.new(__FILE__).dirname.join('demos', tag)
-      end
-
-      # Specify or get a small demo string for this lexer
-      def demo(arg = nil)
-        return @demo = arg unless arg.nil?
-
-        @demo = File.read(demo_file, encoding: 'utf-8')
-      end
-
       # Guess which lexer to use based on a hash of info.
       #
       # This accepts the same arguments as Lexer.guess, but will never throw
