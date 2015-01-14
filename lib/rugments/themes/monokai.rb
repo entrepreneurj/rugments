@@ -31,7 +31,7 @@ module Rugments
       style Comment::Special,                 fg: :dimgrey, italic: true, bold: true
       style Error,                            fg: :carmine, bg: :very_dark
       style Generic::Inserted,                fg: :white, bg: :dimgreen
-      style Generic::Deleted,                 fg: :white, :bg: :dimred
+      style Generic::Deleted,                 fg: :white, bg: :dimred
       style Generic::Emph,                    fg: :black, italic: true
       style Generic::Error,
             Generic::Traceback,               fg: :dark_red

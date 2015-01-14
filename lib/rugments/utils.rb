@@ -101,7 +101,7 @@ module Rugments
     def push(o)
       own_entries << o
     end
-    
+
     alias_method :<<, :push
   end
 
