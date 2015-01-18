@@ -7,57 +7,102 @@ module Rugments
     include Tokens
 
     class << self
+      # Sets/Gets the class instance variable @title. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # title should be a human readable lexer name, e.g. "Ruby".
       def title(val = nil)
-        val = tag.capitalize if val.nil?
-        @title ||= val
+        if val.nil?
+          @title
+        else
+          @title ||= val
+        end
       end
 
+      # Sets/Gets the class instance variable @desc. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # It contains a short description of the lexer, such as
+      # "The Ruby programming language (ruby-lang.org)".
       def desc(val = nil)
         if val.nil?
           @desc
         else
-          @desc = val
+          @desc ||= val
         end
       end
 
+      # Sets/Gets the class instance variable @tag. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # tag must be a unique identifier for the lexer. It is
+      # used internally as the "key" of LEXERS_CACHE.
+      def tag(val = nil)
+        if val.nil?
+          @tag
+        else
+          @tag ||= val.to_sym
+        end
+      end
+
+      # Sets/Gets the class instance variable @aliases. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # The lexer could be found by the tag or the aliases.
       def aliases(*vals)
-        vals.map!(&:to_s)
-        # TODO: Honor aliases in LEXERS_CACHE again
-        # vals.each { |arg| Lexer.register(arg, self) }
-        @aliases ||= []
-        @aliases += vals
+        if vals.empty?
+          @aliases
+        else
+          vals.map!(&:to_s)
+          # TODO: Honor aliases in LEXERS_CACHE again
+          # vals.each { |arg| Lexer.register(arg, self) }
+          @aliases ||= []
+          @aliases += vals
+        end
       end
 
+      # Sets/Gets the class instance variable @filenames. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # This variable maps the lexer to filename patterns.
       def filenames(*vals)
-        @filenames ||= []
-        @filenames += vals
+        if vals.empty?
+          @filenames
+        else
+          vals.map!(&:to_s)
+          @filenames ||= []
+          @filenames += vals
+        end
       end
 
+      # Sets/Gets the class instance variable @mimetypes. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # This variable maps the lexer to mimetypes.
       def mimetypes(*vals)
-        @mimetypes ||= []
-        @mimetypes += vals
+        if vals.empty?
+          @mimetypes
+        else
+          vals.map!(&:to_s)
+          @mimetypes ||= []
+          @mimetypes += vals
+        end
       end
 
-      def tag(value = nil)
-        return @tag if value.nil?
-
-        @tag = value.to_sym
+      def default_options(opts = {})
+        @default_options ||= {}
+        @default_options.merge!(opts)
+        @default_options
       end
 
       def assert_utf8!(str)
         return if %w(US-ASCII UTF-8 ASCII-8BIT).include?(str.encoding.name)
-        fail EncodingError.new(
-          "Bad encoding: #{str.encoding.names.join(',')}. " \
-          'Please convert your string to UTF-8.'
-        )
+        fail IOError, 'Bad encoding! Please convert your string to UTF-8.'
       end
 
-      def default_options(o = {})
-        @default_options ||= {}
-        @default_options.merge!(o)
-        @default_options
-      end
-
+      # Returns all lexer classes known by rugments. It reads the
+      # Rugments::LEXERS_CACHE variable and loads the convenient
+      # files.
       def all
         lexers = []
 
@@ -69,6 +114,8 @@ module Rugments
         lexers
       end
 
+      # Returns a lexer class. You'll have to provide the tag
+      # or an alias which are defined in the lexer class.
       def find_by_name(tag)
         tag.downcase!
         tag = tag.to_sym
@@ -196,25 +243,13 @@ module Rugments
     #   state stack at the beginning of each step, along with each regex
     #   tried and each stream consumed.  Try it, it's pretty useful.
     def initialize(opts = {})
-      options(opts)
-
-      @debug = option(:debug)
-    end
-
-    # get and/or specify the options for this lexer.
-    def options(o = {})
-      (@options ||= {}).merge!(o)
+      @options ||= {}
+      @options.merge!(opts)
 
       self.class.default_options.merge(@options)
-    end
 
-    # get or specify one option for this lexer
-    def option(k, v = nil)
-      if v.nil?
-        options[k]
-      else
-        options(k => v)
-      end
+      # TODO: Reenable debug
+      # @debug = option(:debug)
     end
 
     # Given a string, yield [token, chunk] pairs.  If no block is given,
