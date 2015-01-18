@@ -93,77 +93,34 @@ module Rugments
         new(opts).lex(raw)
       end
 
-      # Guess which lexer to use based on a hash of info.
-      #
-      # This accepts the same arguments as Lexer.guess, but will never throw
-      # an error.  It will return a (possibly empty) list of potential lexers
-      # to use.
-      def guesses(info = {})
-        mimetype, filename, source = info.values_at(:mimetype, :filename, :source)
-        lexers = registry.values.uniq
+      def guess(mimetype: nil, filename: nil, source: nil)
+        lexers = all_ng
         total_size = lexers.size
 
         lexers = filter_by_mimetype(lexers, mimetype) if mimetype
-        return lexers if lexers.size == 1
+        return lexers[0] if lexers.size == 1
 
         lexers = filter_by_filename(lexers, filename) if filename
-        return lexers if lexers.size == 1
+        return lexers[0] if lexers.size == 1
 
         if source
-          # If we're filtering against *all* lexers, we only use confident return
-          # values from analyze_text.  But if we've filtered down already, we can trust
-          # the analysis more.
+          # If we're filtering against *all* lexers, we only use confident
+          # return values from analyze_text. But if we've filtered down already,
+          # we can trust the analysis more.
           source_threshold = lexers.size < total_size ? 0 : 0.5
           return [best_by_source(lexers, source, source_threshold)].compact
         end
 
-        []
-      end
-
-      class AmbiguousGuess < StandardError
-        attr_reader :alternatives
-
-        def initialize(alternatives)
-          @alternatives = alternatives
-        end
-
-        def message
-          "Ambiguous guess: can't decide between #{alternatives.map(&:tag).inspect}"
-        end
-      end
-
-      # Guess which lexer to use based on a hash of info.
-      #
-      # @option info :mimetype
-      #   A mimetype to guess by
-      # @option info :filename
-      #   A filename to guess by
-      # @option info :source
-      #   The source itself, which, if guessing by mimetype or filename
-      #   fails, will be searched for shebangs, <!DOCTYPE ...> tags, and
-      #   other hints.
-      #
-      # @see Lexer.analyze_text
-      # @see Lexer.multi_guess
-      def guess(info = {})
-        lexers = guesses(info)
-
         return Lexers::PlainText if lexers.empty?
-        return lexers[0] if lexers.size == 1
-
-        fail AmbiguousGuess.new(lexers)
+        return lexers[0]
       end
 
-      def guess_by_mimetype(mt)
-        guess mimetype: mt
+      def guess_for_mimetype(mimetype, source)
+        guess(mimetype: mimetype, source: source)
       end
 
-      def guess_by_filename(fname)
-        guess filename: fname
-      end
-
-      def guess_by_source(source)
-        guess source: source
+      def guess_for_filename(filename, source)
+        guess(filename: filename, source: source)
       end
 
       private
@@ -775,6 +732,3 @@ module Rugments
     start { parent.reset! }
   end
 end
-
-lib_path = File.expand_path(File.dirname(__FILE__))
-Dir.glob(File.join(lib_path, 'lexers/*.rb')) { |f| require_relative f }
