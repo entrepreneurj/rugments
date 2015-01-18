@@ -22,7 +22,8 @@ module Rugments
 
       def aliases(*vals)
         vals.map!(&:to_s)
-        vals.each { |arg| Lexer.register(arg, self) }
+        # TODO: Honor aliases in LEXERS_CACHE again
+        # vals.each { |arg| Lexer.register(arg, self) }
         @aliases ||= []
         @aliases += vals
       end
@@ -41,7 +42,6 @@ module Rugments
         return @tag if value.nil?
 
         @tag = value.to_sym
-        Lexer.register(@tag, self)
       end
 
       def assert_utf8!(str)
@@ -58,7 +58,7 @@ module Rugments
         @default_options
       end
 
-      def all_ng
+      def all
         lexers = []
 
         lexers = LEXERS_CACHE.keys.map do |tag|
@@ -69,7 +69,7 @@ module Rugments
         lexers
       end
 
-      def find_by_name_ng(tag)
+      def find_by_name(tag)
         tag.downcase!
         tag = tag.to_sym
 
@@ -81,20 +81,12 @@ module Rugments
         end
       end
 
-      def all
-        registry.values.uniq
-      end
-
-      def find(name)
-        registry[name.to_sym]
-      end
-
       def lex(raw, opts = {})
         new(opts).lex(raw)
       end
 
       def guess(mimetype: nil, filename: nil, source: nil)
-        lexers = all_ng
+        lexers = all
         total_size = lexers.size
 
         lexers = filter_by_mimetype(lexers, mimetype) if mimetype
@@ -189,18 +181,6 @@ module Rugments
         end
 
         best_match
-      end
-
-      protected
-
-      def register(name, lexer)
-        registry[name.to_sym] = lexer
-      end
-
-      private
-
-      def registry
-        @registry ||= {}
       end
     end
 
