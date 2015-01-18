@@ -117,8 +117,8 @@ module Rugments
 
       private
 
-      def filter_by_mimetype(lexers, mt)
-        filtered = lexers.select { |lexer| lexer.mimetypes.include? mt }
+      def filter_by_mimetype(lexers, mimetype)
+        filtered = lexers.select { |lexer| lexer.mimetypes.include?(mimetype) }
         filtered.any? ? filtered : lexers
       end
 
@@ -128,14 +128,14 @@ module Rugments
       # matches `nginx.conf`, and the Conf lexer, which matches `*.conf`.
       # In this case, nginx will win because the pattern has no wildcards,
       # while `*.conf` has one.
-      def filter_by_filename(lexers, fname)
-        fname = File.basename(fname)
+      def filter_by_filename(lexers, filename)
+        filename = File.basename(filename)
 
         out = []
         best_seen = nil
         lexers.each do |lexer|
           score = lexer.filenames.map do |pattern|
-            if File.fnmatch?(pattern, fname, File::FNM_DOTMATCH)
+            if File.fnmatch?(pattern, filename, File::FNM_DOTMATCH)
               # specificity is better the fewer wildcards there are
               pattern.scan(/[*?\[]/).size
             end
