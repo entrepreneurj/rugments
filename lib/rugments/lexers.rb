@@ -58,6 +58,29 @@ module Rugments
         @default_options
       end
 
+      def all_ng
+        lexers = []
+
+        lexers = LEXERS_CACHE.keys.map do |tag|
+          require_relative LEXERS_CACHE[tag][:file_name]
+          Object.const_get(LEXERS_CACHE[tag][:class_name])
+        end
+
+        lexers
+      end
+
+      def find_by_name_ng(tag)
+        tag.downcase!
+        tag = tag.to_sym
+
+        if LEXERS_CACHE.has_key?(tag)
+          require_relative LEXERS_CACHE[tag][:file_name]
+          Object.const_get(LEXERS_CACHE[tag][:class_name])
+        else
+          nil
+        end
+      end
+
       def all
         registry.values.uniq
       end
