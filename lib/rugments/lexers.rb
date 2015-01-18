@@ -120,11 +120,9 @@ module Rugments
         tag.downcase!
         tag = tag.to_sym
 
-        if LEXERS_CACHE.has_key?(tag)
+        if LEXERS_CACHE.key?(tag)
           require_relative LEXERS_CACHE[tag][:source_file]
           Object.const_get(LEXERS_CACHE[tag][:class_name])
-        else
-          nil
         end
       end
 
