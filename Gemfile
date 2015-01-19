@@ -1,24 +1,18 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gemspec
 
-gem 'minitest', '~> 4.0'
-gem 'wrong'
-
-gem 'rake'
-
-# don't try to install redcarpet under jruby
-gem 'redcarpet', platforms: :ruby
-
 group :development do
-  gem 'pry'
 
-  # docs
   gem 'yard'
   gem 'github-markup'
-
-  # for visual tests
-  gem 'sinatra'
-  gem 'shotgun'
+  gem 'redcarpet', platforms: :ruby
   gem 'ruby-prof'
+end
+
+group :test do
+  gem 'rake'
+  gem 'rspec'
+  gem 'simplecov', require: false
+  gem 'coveralls', require: false
 end

@@ -1,12 +1,11 @@
-# it's a gem, ignore the lockfile
-Gemfile.lock
-
 *.gem
+Gemfile.lock
 /.bundle
 /vendor
 
 /.yardoc
 /doc
+/coverage
 /build
 /test.rb
 *patch
