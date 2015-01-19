@@ -5,6 +5,31 @@ module Rugments
     class HTML < Formatter
       tag 'html'
 
+      # Creates a new <tt>Rugments::Formatter::HTML instance.</tt>
+      #
+      # [+nowrap+]          If set to True, don't wrap the output at all, not
+      #                     even inside a <tt><pre></tt> tag (default: false).
+      # [+cssclass+]        CSS class for the wrapping <tt><div></tt> tag
+      #                     (default: 'highlight').
+      # [+linenos+]         If set to 'table', output line numbers as a table
+      #                     with two cells, one containing the line numbers,
+      #                     the other the whole code. This is copy paste friendly,
+      #                     but may cause alignment problems with some browsers
+      #                     or fonts. If set to 'inline', the line numbers will
+      #                     be integrated in the <tt><pre></tt> tag that contains
+      #                     the code (default: nil).
+      # [+linenostart+]     The line number for the first line (default: 1).
+      # [+lineanchors+]     If set to true the formatter will wrap each output
+      #                     line in an anchor tag with a name of L-linenumber.
+      #                     This allows easy linking to certain lines
+      #                     (default: false).
+      # [+lineanchorsid+]   If lineanchors is true the name of the anchors can
+      #                     be changed with lineanchorsid to e.g. foo-linenumber
+      #                     (default: 'L').
+      # [+anchorlinenos+]   If set to true, will wrap line numbers in <tt><a></tt>
+      #                     tags. Used in combination with linenos and lineanchors
+      #                     (default: false).
+      # [+inline_theme+]    Inline CSS styles for the <pre> tag (default: false).
       def initialize(
           nowrap: false,
           cssclass: 'highlight',
