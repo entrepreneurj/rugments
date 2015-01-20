@@ -4,7 +4,7 @@ require_relative 'rugments/tokens'
 require_relative 'rugments/lexers'
 require_relative 'rugments/formatters'
 require_relative 'rugments/themes'
-require_relative 'rugments/mappings'
+require_relative 'rugments/lexers/mappings'
 
 module Rugments
   module_function

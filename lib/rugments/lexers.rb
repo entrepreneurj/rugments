@@ -123,7 +123,7 @@ module Rugments
           Object.const_get(LEXERS_CACHE[tag][:class_name])
         else
           lexer = LEXERS_CACHE.select do |k, hash|
-            hash[:aliases].include?(tag.to_s)
+            ! hash[:aliases].nil? && hash[:aliases].include?(tag.to_s)
           end
 
           # LEXERS_CACHE.select returns a hash of lexer classes:
@@ -139,7 +139,6 @@ module Rugments
           #
           # We just pick the values of it and take the first one.
           lexer = lexer.values.first
-
           require_relative lexer[:source_file]
           Object.const_get(lexer[:class_name])
         end
