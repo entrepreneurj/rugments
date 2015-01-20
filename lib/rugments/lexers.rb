@@ -122,8 +122,8 @@ module Rugments
           require_relative LEXERS_CACHE[tag][:source_file]
           Object.const_get(LEXERS_CACHE[tag][:class_name])
         else
-          lexer = LEXERS_CACHE.select do |k, hash|
-            ! hash[:aliases].nil? && hash[:aliases].include?(tag.to_s)
+          lexer = LEXERS_CACHE.select do |_k, hash|
+            !hash[:aliases].nil? && hash[:aliases].include?(tag.to_s)
           end
 
           # TODO: Return the first result or the whole array?
@@ -168,7 +168,7 @@ module Rugments
         end
 
         return Lexers::PlainText if lexers.empty?
-        return lexers.first
+        lexers.first
       end
 
       # Alias for guess(mimetype: mimetype, source: source)
@@ -185,7 +185,7 @@ module Rugments
 
       def filter_by_mimetype(lexers, mimetype)
         filtered = lexers.select do |lexer|
-          ! lexer.mimetypes.nil? && lexer.mimetypes.include?(mimetype)
+          !lexer.mimetypes.nil? && lexer.mimetypes.include?(mimetype)
         end
 
         filtered.any? ? filtered : lexers
@@ -203,7 +203,7 @@ module Rugments
         # Match dotfiles and do not care about case sensitivity.
         glob_flags = File::FNM_DOTMATCH | File::FNM_CASEFOLD
 
-        lexers.select! { |lexer| ! lexer.filenames.nil? }
+        lexers.select! { |lexer| !lexer.filenames.nil? }
 
         lexers.each do |lexer|
           score = lexer.filenames.map do |pattern|
