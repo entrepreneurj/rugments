@@ -154,10 +154,10 @@ module Rugments
         total_size = lexers.size
 
         lexers = filter_by_mimetype(lexers, mimetype) if mimetype
-        return lexers[0] if lexers.size == 1
+        return lexers.first if lexers.size == 1
 
         lexers = filter_by_filename(lexers, filename) if filename
-        return lexers[0] if lexers.size == 1
+        return lexers.first if lexers.size == 1
 
         if source
           # If we're filtering against *all* lexers, we only use confident
@@ -168,7 +168,7 @@ module Rugments
         end
 
         return Lexers::PlainText if lexers.empty?
-        return lexers[0]
+        return lexers.first
       end
 
       def guess_for_mimetype(mimetype, source)
