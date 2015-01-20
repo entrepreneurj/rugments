@@ -203,13 +203,15 @@ module Rugments
         lexers.each do |lexer|
           score = lexer.filenames.map do |pattern|
             if File.fnmatch?(pattern, filename, glob_flags)
-              # specificity is better the fewer wildcards there are
-              pattern.scan(/[*?\[]/).size
+              # Specificity is better the fewer wildcards
+              # there are; so a smaller score wins.
+              pattern.scan(/[*?\[\]]/).size
             end
           end.compact.min
 
           next unless score
 
+          # Again: Smaller score wins!
           if best_seen.nil? || score < best_seen
             best_seen = score
             out = [lexer]
