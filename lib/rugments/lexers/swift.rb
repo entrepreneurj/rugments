@@ -24,7 +24,7 @@ module Rugments
       )
 
       attributes = Set.new %w(
-        autoclosure IBAction IBDesignable IBInspectable IBOutlet noreturn NSCopying NSManaged objc UIApplicationMain NSApplicationMain
+        autoclosure IBAction IBDesignable IBInspectable IBOutlet noreturn NSCopying NSManaged objc UIApplicationMain NSApplicationMain objc_block
       )
 
       constants = Set.new %w(
@@ -49,7 +49,7 @@ module Rugments
 
       state :whitespace do
         rule /\n+/m, Text, :bol
-        rule %r{\/\/.*?\n}, Comment::Single, :bol
+        rule %r{\/\/.*?$}, Comment::Single, :bol
         mixin :inline_whitespace
       end
 
