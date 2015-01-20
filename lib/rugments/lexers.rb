@@ -585,7 +585,7 @@ module Rugments
 
         unless success
           puts '    no match, yielding Error' if @debug
-          b.call(Token::Tokens::Error, stream.getch)
+          b.call(Tokens::Error, stream.getch)
         end
       end
     end
