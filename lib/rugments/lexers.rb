@@ -197,10 +197,12 @@ module Rugments
         out = []
         best_seen = nil
         filename = File.basename(filename)
+        # Match dotfiles and do not care about case sensitivity.
+        glob_flags = File::FNM_DOTMATCH | File::FNM_CASEFOLD
 
         lexers.each do |lexer|
           score = lexer.filenames.map do |pattern|
-            if File.fnmatch?(pattern, filename, File::FNM_DOTMATCH)
+            if File.fnmatch?(pattern, filename, glob_flags)
               # specificity is better the fewer wildcards there are
               pattern.scan(/[*?\[]/).size
             end
