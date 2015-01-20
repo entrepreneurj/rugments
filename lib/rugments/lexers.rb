@@ -102,8 +102,6 @@ module Rugments
       # Rugments::LEXERS_CACHE variable and loads the convenient
       # files.
       def all
-        lexers = []
-
         lexers = LEXERS_CACHE.keys.map do |tag|
           require_relative LEXERS_CACHE[tag][:source_file]
           Object.const_get(LEXERS_CACHE[tag][:class_name])
@@ -116,14 +114,13 @@ module Rugments
       # or an alias which are defined in the lexer class.
       def find_by_name(tag)
         tag.downcase!
-        tag = tag.to_sym
 
         if LEXERS_CACHE.key?(tag)
-          require_relative LEXERS_CACHE[tag][:source_file]
-          Object.const_get(LEXERS_CACHE[tag][:class_name])
+          require_relative LEXERS_CACHE[tag.to_sym][:source_file]
+          Object.const_get(LEXERS_CACHE[tag.to_sym][:class_name])
         else
           lexer = LEXERS_CACHE.select do |_k, hash|
-            !hash[:aliases].nil? && hash[:aliases].include?(tag.to_s)
+            !hash[:aliases].nil? && hash[:aliases].include?(tag)
           end
 
           # TODO: Return the first result or the whole array?
