@@ -161,8 +161,8 @@ module Rugments
 
         if source
           # If we're filtering against *all* lexers, we only use confident
-          # return values from analyze_text. But if we've filtered down already,
-          # we can trust the analysis more.
+          # return values from analyze_text. But if we've filtered down
+          # already, we can trust the analysis more.
           source_threshold = lexers.size < total_size ? 0 : 0.5
           return [best_by_source(lexers, source, source_threshold)].compact
         end
@@ -171,10 +171,12 @@ module Rugments
         return lexers.first
       end
 
+      # Alias for guess(mimetype: mimetype, source: source)
       def guess_for_mimetype(mimetype, source)
         guess(mimetype: mimetype, source: source)
       end
 
+      # Alias for guess(filename: filename, source: source)
       def guess_for_filename(filename, source)
         guess(filename: filename, source: source)
       end
@@ -186,17 +188,16 @@ module Rugments
         filtered.any? ? filtered : lexers
       end
 
-      # returns a list of lexers that match the given filename with
-      # equal specificity (i.e. number of wildcards in the pattern).
-      # This helps disambiguate between, e.g. the Nginx lexer, which
-      # matches `nginx.conf`, and the Conf lexer, which matches `*.conf`.
-      # In this case, nginx will win because the pattern has no wildcards,
-      # while `*.conf` has one.
+      # Returns a list of lexers that match the given filename with equal
+      # specificity (i.e. number of wildcards in the pattern). This helps
+      # disambiguate between, e.g. the Nginx lexer, which matches `nginx.conf`,
+      # and the Conf lexer, which matches `*.conf`. In this case, nginx will
+      # win because the pattern has no wildcards, while `*.conf` has one.
       def filter_by_filename(lexers, filename)
-        filename = File.basename(filename)
-
         out = []
         best_seen = nil
+        filename = File.basename(filename)
+
         lexers.each do |lexer|
           score = lexer.filenames.map do |pattern|
             if File.fnmatch?(pattern, filename, File::FNM_DOTMATCH)
