@@ -184,7 +184,10 @@ module Rugments
       private
 
       def filter_by_mimetype(lexers, mimetype)
-        filtered = lexers.select { |lexer| lexer.mimetypes.include?(mimetype) }
+        filtered = lexers.select do |lexer|
+          ! lexer.mimetypes.nil? && lexer.mimetypes.include?(mimetype)
+        end
+
         filtered.any? ? filtered : lexers
       end
 
@@ -199,6 +202,8 @@ module Rugments
         filename = File.basename(filename)
         # Match dotfiles and do not care about case sensitivity.
         glob_flags = File::FNM_DOTMATCH | File::FNM_CASEFOLD
+
+        lexers.select! { |lexer| ! lexer.filenames.nil? }
 
         lexers.each do |lexer|
           score = lexer.filenames.map do |pattern|
