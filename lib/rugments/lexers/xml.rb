@@ -4,14 +4,9 @@ module Rugments
       title 'XML'
       desc '<desc for="this-lexer">XML</desc>'
       tag 'xml'
-      filenames *%w(*.xml *.xsl *.rss *.xslt *.xsd *.wsdl)
-      mimetypes *%w(
-        text/xml
-        application/xml
-        image/svg+xml
-        application/rss+xml
-        application/atom+xml
-      )
+      filenames '*.xml', '*.xsl', '*.rss', '*.xslt', '*.xsd', '*.wsdl'
+      mimetypes 'text/xml', 'application/xml', 'image/svg+xml',
+                'application/rss+xml', 'application/atom+xml'
 
       def self.analyze_text(text)
         return 0.9 if text.doctype?
