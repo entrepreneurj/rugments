@@ -232,11 +232,6 @@ Style/StringLiterals:
 Style/TrailingBlankLines:
   Enabled: false
 
-# Offense count: 9
-# Cop supports --auto-correct.
-Style/TrailingWhitespace:
-  Enabled: false
-
 # Offense count: 19
 # Cop supports --auto-correct.
 # Configuration parameters: WordRegex.

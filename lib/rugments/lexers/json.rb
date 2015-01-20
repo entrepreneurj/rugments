@@ -41,7 +41,7 @@ module Rugments
         rule /:/, Punctuation, :object_val
         rule /}/, Error, :pop!
       end
-      
+
       state :object_val do
         rule /,/, Punctuation, :pop!
         rule(/}/) { token Punctuation; pop!(2) }
