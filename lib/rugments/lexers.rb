@@ -126,6 +126,7 @@ module Rugments
             ! hash[:aliases].nil? && hash[:aliases].include?(tag.to_s)
           end
 
+          # TODO: Return the first result or the whole array?
           # LEXERS_CACHE.select returns a hash of lexer classes:
           #
           # { matlab: {
