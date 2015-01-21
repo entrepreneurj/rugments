@@ -83,12 +83,6 @@ Style/ClassVars:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/EmptyLinesAroundBlockBody:
-  Enabled: false
-
 # Offense count: 2
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
