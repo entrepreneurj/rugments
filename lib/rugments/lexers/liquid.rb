@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*- #
-
-module Rouge
+module Rugments
   module Lexers
     class Liquid < RegexLexer
-      title "Liquid"
+      title 'Liquid'
       desc 'Liquid is a templating engine for Ruby (liquidmarkup.org)'
       tag 'liquid'
       filenames '*.liquid'

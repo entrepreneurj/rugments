@@ -231,6 +231,12 @@ module Rugments
    :aliases=>["lithaskell", "lhaskell", "lhs"],
    :filenames=>["*.lhs"],
    :mimetypes=>["text/x-literate-haskell"]},
+ :liquid=>
+  {:class_name=>"Rugments::Lexers::Liquid",
+   :source_file=>"lexers/liquid.rb",
+   :aliases=>nil,
+   :filenames=>["*.liquid"],
+   :mimetypes=>nil},
  :ini=>
   {:class_name=>"Rugments::Lexers::INI",
    :source_file=>"lexers/ini.rb",
