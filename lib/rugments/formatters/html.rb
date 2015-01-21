@@ -78,15 +78,15 @@ module Rugments
 
         html = []
         html << "<div class=\"#{@cssclass}\">" unless @nowrap
-        html << "<table><tbody>"
+        html << '<table><tbody>'
         html << "<td class=\"linenos\"><pre>"
         html << wrap_linenos(data[:numbers])
-        html << "</pre></td>"
+        html << '</pre></td>'
         html << "<td class=\"lines\"><pre><code>"
         html << wrap_lines(data[:code])
-        html << "</code></pre></td>"
-        html << "</tbody></table>"
-        html << "</div>" unless @nowrap
+        html << '</code></pre></td>'
+        html << '</tbody></table>'
+        html << '</div>' unless @nowrap
         html.join("\n")
       end
 

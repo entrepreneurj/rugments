@@ -63,7 +63,7 @@ module Rugments
                           push :example_description; Name::Namespace
                         else
                           Error
-          end
+                        end
 
           groups keyword_tok, Punctuation
         end

@@ -264,7 +264,7 @@ module Rugments
                        Name::Constant
                      else
                        Str::Heredoc
-          end
+                     end
 
           groups(Str::Heredoc, line_tok)
         end

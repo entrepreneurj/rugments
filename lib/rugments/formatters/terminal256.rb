@@ -115,13 +115,13 @@ module Rugments
         def self.get_rgb(color)
           color = Regexp.last_match[1] if color =~ /#([0-9a-f]+)/i
           hexes = case color.size
-          when 3
-            color.chars.map { |c| "#{c}#{c}" }
-          when 6
-            color.scan(/../)
-          else
-            fail "invalid color: #{color}"
-          end
+                  when 3
+                    color.chars.map { |c| "#{c}#{c}" }
+                  when 6
+                    color.scan(/../)
+                  else
+                    fail "invalid color: #{color}"
+                  end
 
           hexes.map { |h| h.to_i(16) }
         end

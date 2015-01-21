@@ -7,204 +7,213 @@ module Rugments
     include Tokens
 
     class << self
+      # Sets/Gets the class instance variable @title. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # title should be a human readable lexer name, e.g. "Ruby".
       def title(val = nil)
-        val = tag.capitalize if val.nil?
-        @title ||= val
+        if val.nil?
+          @title
+        else
+          @title ||= val
+        end
       end
 
+      # Sets/Gets the class instance variable @desc. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # It contains a short description of the lexer, such as
+      # "The Ruby programming language (ruby-lang.org)".
       def desc(val = nil)
         if val.nil?
           @desc
         else
-          @desc = val
+          @desc ||= val
         end
       end
 
+      # Sets/Gets the class instance variable @tag. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # tag must be a unique identifier for the lexer. It is
+      # used internally as the "key" of LEXERS_CACHE.
+      def tag(val = nil)
+        if val.nil?
+          @tag
+        else
+          @tag ||= val.to_sym
+        end
+      end
+
+      # Sets/Gets the class instance variable @aliases. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # The lexer could be found by the tag or the aliases.
       def aliases(*vals)
-        vals.map!(&:to_s)
-        vals.each { |arg| Lexer.register(arg, self) }
-        @aliases ||= []
-        @aliases += vals
+        if vals.empty?
+          @aliases
+        else
+          vals.map!(&:to_s)
+          @aliases ||= []
+          @aliases += vals
+        end
       end
 
+      # Sets/Gets the class instance variable @filenames. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # This variable maps the lexer to filename patterns.
       def filenames(*vals)
-        @filenames ||= []
-        @filenames += vals
+        if vals.empty?
+          @filenames
+        else
+          vals.map!(&:to_s)
+          @filenames ||= []
+          @filenames += vals
+        end
       end
 
+      # Sets/Gets the class instance variable @mimetypes. You are
+      # supposed to set this variable in a lexer definition.
+      #
+      # This variable maps the lexer to mimetypes.
       def mimetypes(*vals)
-        @mimetypes ||= []
-        @mimetypes += vals
+        if vals.empty?
+          @mimetypes
+        else
+          vals.map!(&:to_s)
+          @mimetypes ||= []
+          @mimetypes += vals
+        end
       end
 
-      def tag(value = nil)
-        return @tag if value.nil?
-
-        @tag = value.to_sym
-        Lexer.register(@tag, self)
+      def default_options(opts = {})
+        @default_options ||= {}
+        @default_options.merge!(opts)
+        @default_options
       end
 
       def assert_utf8!(str)
         return if %w(US-ASCII UTF-8 ASCII-8BIT).include?(str.encoding.name)
-        fail EncodingError.new(
-          "Bad encoding: #{str.encoding.names.join(',')}. " \
-          'Please convert your string to UTF-8.'
-        )
+        fail IOError, 'Bad encoding! Please convert your string to UTF-8.'
       end
 
-      def default_options(o = {})
-        @default_options ||= {}
-        @default_options.merge!(o)
-        @default_options
-      end
-
+      # Returns all lexer classes known by rugments. It reads the
+      # Rugments::LEXERS_CACHE variable and loads the convenient
+      # files.
       def all
-        registry.values.uniq
-      end
-
-      def find(name)
-        registry[name.to_sym]
-      end
-
-      # Find a lexer, with fancy shiny features.
-      #
-      # * The string you pass can include CGI-style options
-      #
-      #     Lexer.find_fancy('erb?parent=tex')
-      #
-      # * You can pass the special name 'guess' so we guess for you,
-      #   and you can pass a second argument of the code to guess by
-      #
-      #     Lexer.find_fancy('guess', "#!/bin/bash\necho Hello, world")
-      #
-      # This is used in the Redcarpet plugin as well as Rouge's own
-      # markdown lexer for highlighting internal code blocks.
-      #
-      def find_fancy(str, code = nil)
-        name, opts = str ? str.split('?', 2) : [nil, '']
-
-        # parse the options hash from a cgi-style string
-        opts = CGI.parse(opts || '').map do |k, vals|
-          [k.to_sym, vals.empty? ? true : vals[0]]
+        lexers = LEXERS_CACHE.keys.map do |tag|
+          require_relative LEXERS_CACHE[tag][:source_file]
+          Object.const_get(LEXERS_CACHE[tag][:class_name])
         end
 
-        opts = Hash[opts]
+        lexers
+      end
 
-        lexer_class = case name
-                      when 'guess', nil
-                        guess(source: code, mimetype: opts[:mimetype])
-                      when String
-                        find(name)
-                      end
+      # Returns a lexer class. You'll have to provide the tag
+      # or an alias which are defined in the lexer class.
+      def find_by_name(tag)
+        tag.downcase!
 
-        lexer_class && lexer_class.new(opts)
+        if LEXERS_CACHE.key?(tag)
+          require_relative LEXERS_CACHE[tag.to_sym][:source_file]
+          Object.const_get(LEXERS_CACHE[tag.to_sym][:class_name])
+        else
+          lexer = LEXERS_CACHE.select do |_k, hash|
+            !hash[:aliases].nil? && hash[:aliases].include?(tag)
+          end
+
+          # TODO: Return the first result or the whole array?
+          # LEXERS_CACHE.select returns a hash of lexer classes:
+          #
+          # { matlab: {
+          #     class_name: 'Rugments::Lexers::Matlab',
+          #     source_file: 'lexers/matlab.rb',
+          #     aliases: ['m'],
+          #     filenames: ['*.m'],
+          #     mimetypes: ['text/x-matlab', 'application/x-matlab']
+          #   }
+          # }
+          #
+          # We just pick the values of it and take the first one.
+          lexer = lexer.values.first
+          require_relative lexer[:source_file]
+          Object.const_get(lexer[:class_name])
+        end
       end
 
       def lex(raw, opts = {})
         new(opts).lex(raw)
       end
 
-      # Guess which lexer to use based on a hash of info.
-      #
-      # This accepts the same arguments as Lexer.guess, but will never throw
-      # an error.  It will return a (possibly empty) list of potential lexers
-      # to use.
-      def guesses(info = {})
-        mimetype, filename, source = info.values_at(:mimetype, :filename, :source)
-        lexers = registry.values.uniq
+      def guess(mimetype: nil, filename: nil, source: nil)
+        lexers = all
         total_size = lexers.size
 
         lexers = filter_by_mimetype(lexers, mimetype) if mimetype
-        return lexers if lexers.size == 1
+        return lexers.first if lexers.size == 1
 
         lexers = filter_by_filename(lexers, filename) if filename
-        return lexers if lexers.size == 1
+        return lexers.first if lexers.size == 1
 
         if source
-          # If we're filtering against *all* lexers, we only use confident return
-          # values from analyze_text.  But if we've filtered down already, we can trust
-          # the analysis more.
+          # If we're filtering against *all* lexers, we only use confident
+          # return values from analyze_text. But if we've filtered down
+          # already, we can trust the analysis more.
           source_threshold = lexers.size < total_size ? 0 : 0.5
           return [best_by_source(lexers, source, source_threshold)].compact
         end
 
-        []
-      end
-
-      class AmbiguousGuess < StandardError
-        attr_reader :alternatives
-
-        def initialize(alternatives)
-          @alternatives = alternatives
-        end
-
-        def message
-          "Ambiguous guess: can't decide between #{alternatives.map(&:tag).inspect}"
-        end
-      end
-
-      # Guess which lexer to use based on a hash of info.
-      #
-      # @option info :mimetype
-      #   A mimetype to guess by
-      # @option info :filename
-      #   A filename to guess by
-      # @option info :source
-      #   The source itself, which, if guessing by mimetype or filename
-      #   fails, will be searched for shebangs, <!DOCTYPE ...> tags, and
-      #   other hints.
-      #
-      # @see Lexer.analyze_text
-      # @see Lexer.multi_guess
-      def guess(info = {})
-        lexers = guesses(info)
-
         return Lexers::PlainText if lexers.empty?
-        return lexers[0] if lexers.size == 1
-
-        fail AmbiguousGuess.new(lexers)
+        lexers.first
       end
 
-      def guess_by_mimetype(mt)
-        guess mimetype: mt
+      # Alias for guess(mimetype: mimetype, source: source)
+      def guess_for_mimetype(mimetype, source)
+        guess(mimetype: mimetype, source: source)
       end
 
-      def guess_by_filename(fname)
-        guess filename: fname
-      end
-
-      def guess_by_source(source)
-        guess source: source
+      # Alias for guess(filename: filename, source: source)
+      def guess_for_filename(filename, source)
+        guess(filename: filename, source: source)
       end
 
       private
 
-      def filter_by_mimetype(lexers, mt)
-        filtered = lexers.select { |lexer| lexer.mimetypes.include? mt }
+      def filter_by_mimetype(lexers, mimetype)
+        filtered = lexers.select do |lexer|
+          !lexer.mimetypes.nil? && lexer.mimetypes.include?(mimetype)
+        end
+
         filtered.any? ? filtered : lexers
       end
 
-      # returns a list of lexers that match the given filename with
-      # equal specificity (i.e. number of wildcards in the pattern).
-      # This helps disambiguate between, e.g. the Nginx lexer, which
-      # matches `nginx.conf`, and the Conf lexer, which matches `*.conf`.
-      # In this case, nginx will win because the pattern has no wildcards,
-      # while `*.conf` has one.
-      def filter_by_filename(lexers, fname)
-        fname = File.basename(fname)
-
+      # Returns a list of lexers that match the given filename with equal
+      # specificity (i.e. number of wildcards in the pattern). This helps
+      # disambiguate between, e.g. the Nginx lexer, which matches `nginx.conf`,
+      # and the Conf lexer, which matches `*.conf`. In this case, nginx will
+      # win because the pattern has no wildcards, while `*.conf` has one.
+      def filter_by_filename(lexers, filename)
         out = []
         best_seen = nil
+        filename = File.basename(filename)
+        # Match dotfiles and do not care about case sensitivity.
+        glob_flags = File::FNM_DOTMATCH | File::FNM_CASEFOLD
+
+        lexers.select! { |lexer| !lexer.filenames.nil? }
+
         lexers.each do |lexer|
           score = lexer.filenames.map do |pattern|
-            if File.fnmatch?(pattern, fname, File::FNM_DOTMATCH)
-              # specificity is better the fewer wildcards there are
-              pattern.scan(/[*?\[]/).size
+            if File.fnmatch?(pattern, filename, glob_flags)
+              # Specificity is better the fewer wildcards
+              # there are; so a smaller score wins.
+              pattern.scan(/[*?\[\]]/).size
             end
           end.compact.min
 
           next unless score
 
+          # Again: Smaller score wins!
           if best_seen.nil? || score < best_seen
             best_seen = score
             out = [lexer]
@@ -244,18 +253,6 @@ module Rugments
 
         best_match
       end
-
-      protected
-
-      def register(name, lexer)
-        registry[name.to_sym] = lexer
-      end
-
-      private
-
-      def registry
-        @registry ||= {}
-      end
     end
 
     # instance methods
@@ -270,25 +267,13 @@ module Rugments
     #   state stack at the beginning of each step, along with each regex
     #   tried and each stream consumed.  Try it, it's pretty useful.
     def initialize(opts = {})
-      options(opts)
-
-      @debug = option(:debug)
-    end
-
-    # get and/or specify the options for this lexer.
-    def options(o = {})
-      (@options ||= {}).merge!(o)
+      @options ||= {}
+      @options.merge!(opts)
 
       self.class.default_options.merge(@options)
-    end
 
-    # get or specify one option for this lexer
-    def option(k, v = nil)
-      if v.nil?
-        options[k]
-      else
-        options(k => v)
-      end
+      # TODO: Reenable debug
+      # @debug = option(:debug)
     end
 
     # Given a string, yield [token, chunk] pairs.  If no block is given,
@@ -435,36 +420,36 @@ module Rugments
         end
 
         callback ||= case next_state
-        when :pop!
-          proc do |stream|
-            puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
-            @output_stream.call(tok, stream[0])
-            puts "    popping stack: #{1}" if @debug
-            @stack.pop || fail('empty stack!')
-          end
-        when :push
-          proc do |stream|
-            puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
-            @output_stream.call(tok, stream[0])
-            puts "    pushing #{@stack.last.name}" if @debug
-            @stack.push(@stack.last)
-          end
-        when Symbol
-          proc do |stream|
-            puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
-            @output_stream.call(tok, stream[0])
-            state = @states[next_state] || self.class.get_state(next_state)
-            puts "    pushing #{state.name}" if @debug
-            @stack.push(state)
-          end
-        when nil
-          proc do |stream|
-            puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
-            @output_stream.call(tok, stream[0])
-          end
-        else
-          fail "invalid next state: #{next_state.inspect}"
-        end
+                     when :pop!
+                       proc do |stream|
+                         puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
+                         @output_stream.call(tok, stream[0])
+                         puts '    popping stack: 1' if @debug
+                         @stack.pop || fail('empty stack!')
+                       end
+                     when :push
+                       proc do |stream|
+                         puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
+                         @output_stream.call(tok, stream[0])
+                         puts "    pushing #{@stack.last.name}" if @debug
+                         @stack.push(@stack.last)
+                       end
+                     when Symbol
+                       proc do |stream|
+                         puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
+                         @output_stream.call(tok, stream[0])
+                         state = @states[next_state] || self.class.get_state(next_state)
+                         puts "    pushing #{state.name}" if @debug
+                         @stack.push(state)
+                       end
+                     when nil
+                       proc do |stream|
+                         puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
+                         @output_stream.call(tok, stream[0])
+                       end
+                     else
+                       fail "invalid next state: #{next_state.inspect}"
+                     end
 
         rules << Rule.new(re, callback)
       end
@@ -607,7 +592,7 @@ module Rugments
 
         unless success
           puts '    no match, yielding Error' if @debug
-          b.call(Token::Tokens::Error, stream.getch)
+          b.call(Tokens::Error, stream.getch)
         end
       end
     end
@@ -637,7 +622,9 @@ module Rugments
           # the most common, for now...
           next if rule.beginning_of_line && !stream.beginning_of_line?
 
-          if size = stream.skip(rule.re)
+          size = stream.skip(rule.re)
+
+          if size
             puts "    got #{stream[0].inspect}" if @debug
 
             instance_exec(stream, &rule.callback)
@@ -786,6 +773,3 @@ module Rugments
     start { parent.reset! }
   end
 end
-
-lib_path = File.expand_path(File.dirname(__FILE__))
-Dir.glob(File.join(lib_path, 'lexers/*.rb')) { |f| require_relative f }

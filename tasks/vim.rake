@@ -1,21 +1,21 @@
 def get_keywords(input)
   out = { command: [], option: [], auto: [] }
   input.each do |line|
-    line =~ %r(^
+    line =~ %r{^
       (?: syn[ ]keyword[ ](vimCommand|vimOpt|vimAutoEvent)[ ]contained )
       (.*)
-    $)x
+    $}x
 
     next unless $1
 
     out_list = case $1
-    when 'vimCommand'
-      out[:command]
-    when 'vimAutoEvent'
-      out[:auto]
-    when 'vimOpt'
-      out[:option]
-    end
+               when 'vimCommand'
+                 out[:command]
+               when 'vimAutoEvent'
+                 out[:auto]
+               when 'vimOpt'
+                 out[:option]
+               end
 
     $2.scan(/([\w:]+)(?:\[(\w+)\])?/) do
       out_list << [$1, "#{$1}#{$2}"]
