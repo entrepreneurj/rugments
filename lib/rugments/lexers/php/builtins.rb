@@ -4622,7 +4622,6 @@ module Rugments
    "zlib_decode",
    "zlib_encode",
    "zlib_get_coding_type"]}
-        end
       end
     end
   end

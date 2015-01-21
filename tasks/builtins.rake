@@ -67,7 +67,6 @@ namespace :builtins do
       f.puts '      def self.builtins'
       f.print '        @builtins ||= '
       PP.pp php_builtins, f
-      f.puts '        end'
       f.puts '      end'
       f.puts '    end'
       f.puts '  end'
