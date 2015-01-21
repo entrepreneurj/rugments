@@ -103,12 +103,6 @@ module Rugments
 
         numbers = (@linenostart..num_lines + @linenostart - 1).to_a
 
-        # Add an extra line for non-newline-terminated strings.
-        unless last_val[-1] == "\n"
-          num_lines += 1
-          rendered << span(Token::Tokens::Text::Whitespace, "\n")
-        end
-
         { numbers: numbers, code: rendered }
       end
 
