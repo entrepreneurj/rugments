@@ -9,10 +9,6 @@
 Lint/AmbiguousRegexpLiteral:
   Enabled: false
 
-# Offense count: 1
-Lint/LiteralInInterpolation:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Lint/UnusedBlockArgument:
