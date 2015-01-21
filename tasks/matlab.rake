@@ -9,7 +9,7 @@ def matlab_builtins(&b)
 
   p :docs => matlab_docs
 
-  matlab_docs.scan %r(<a href="[.][.]/matlab/ref/(\w+)[.]html">)m do |word|
+  matlab_docs.scan %r{<a href="[.][.]/matlab/ref/(\w+)[.]html">}m do |word|
     p :word => word
     yield word
   end

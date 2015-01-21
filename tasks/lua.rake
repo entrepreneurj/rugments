@@ -20,7 +20,7 @@ end
 def get_lua_functions(manual_url)
   open(manual_url) do |f|
     f.map do |line|
-      line[%r(^<A HREF="manual.html#pdf-(.+)">\1</A>), 1]
+      line[%r{^<A HREF="manual.html#pdf-(.+)">\1</A>}, 1]
     end.compact
   end
 end

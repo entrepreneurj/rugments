@@ -16,12 +16,12 @@ def php_functions(&b)
   return enum_for :php_functions unless block_given?
 
   php_references do |file|
-    file =~ %r(<title>(.*?) Functions</title>)
+    file =~ %r{<title>(.*?) Functions</title>}
     name = $1
 
     next unless name
 
-    functions = file.scan %r(<a href="function\..*?\.html">(.*?)</a>)
+    functions = file.scan %r{<a href="function\..*?\.html">(.*?)</a>}
 
     yield [name, functions]
   end

@@ -1,10 +1,10 @@
 def get_keywords(input)
   out = { command: [], option: [], auto: [] }
   input.each do |line|
-    line =~ %r(^
+    line =~ %r{^
       (?: syn[ ]keyword[ ](vimCommand|vimOpt|vimAutoEvent)[ ]contained )
       (.*)
-    $)x
+    $}x
 
     next unless $1
 
