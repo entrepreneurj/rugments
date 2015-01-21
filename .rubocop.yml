@@ -2,6 +2,6 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   Exclude:
-    - '**/mappings.rb'
+    - 'lib/**/mappings.rb'
     - 'vendor/**/*'
     - 'spec/**/*'
