@@ -11,7 +11,7 @@ module Rugments
       # could mean doing two full lexes.
       def self.analyze_text(text)
         return 0.8 if text =~ /\A\s*{/m && text.lexes_cleanly?(self)
-        end
+      end
 
       state :root do
         mixin :whitespace
