@@ -71,11 +71,6 @@ Style/AlignParameters:
 Style/AndOr:
   Enabled: false
 
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/Blocks:
-  Enabled: false
-
 # Offense count: 9
 Style/CaseEquality:
   Enabled: false
