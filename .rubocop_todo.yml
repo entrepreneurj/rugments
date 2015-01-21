@@ -128,12 +128,6 @@ Style/RegexpLiteral:
 Style/Semicolon:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-Style/SpaceInsideBlockBraces:
-  Enabled: false
-
 # Offense count: 799
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

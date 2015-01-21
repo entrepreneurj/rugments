@@ -10,8 +10,8 @@ namespace :mappings do
     # LEXERS_CACHE. So we cannot rely on LEXERS_CACHE to find lexers.
     require_relative File.join(lib_path, 'rugments.rb')
     lexer_paths = Dir.glob(File.join(lib_path, 'rugments/lexers/*.rb'))
-    lexer_paths.select { |path| File.basename(path) != 'mappings.rb'}
-    lexer_paths.each { |path| require_relative path}
+    lexer_paths.select { |path| File.basename(path) != 'mappings.rb' }
+    lexer_paths.each { |path| require_relative path }
 
     lexer_syms = Rugments::Lexers.constants.select do |c|
       Rugments::Lexers.const_get(c).is_a?(Class)
