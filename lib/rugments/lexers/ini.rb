@@ -5,7 +5,7 @@ module Rugments
       desc 'the INI configuration format'
       tag 'ini'
 
-      # TODO add more here
+      # TODO: add more here
       filenames '*.ini', '*.INI', '*.gitconfig'
       mimetypes 'text/x-ini'
 

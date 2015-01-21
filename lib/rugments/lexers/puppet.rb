@@ -58,7 +58,7 @@ module Rugments
         rule /[+=|~-]>|<[|~-]/, Punctuation
         rule /[:}();\[\]]/, Punctuation
 
-        # HACK for case statements and selectors
+        # HACK: for case statements and selectors
         rule /{/, Punctuation, :regex_allowed
         rule /,/, Punctuation, :regex_allowed
 
