@@ -420,36 +420,36 @@ module Rugments
         end
 
         callback ||= case next_state
-        when :pop!
-          proc do |stream|
-            puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
-            @output_stream.call(tok, stream[0])
-            puts "    popping stack: 1" if @debug
-            @stack.pop || fail('empty stack!')
-          end
-        when :push
-          proc do |stream|
-            puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
-            @output_stream.call(tok, stream[0])
-            puts "    pushing #{@stack.last.name}" if @debug
-            @stack.push(@stack.last)
-          end
-        when Symbol
-          proc do |stream|
-            puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
-            @output_stream.call(tok, stream[0])
-            state = @states[next_state] || self.class.get_state(next_state)
-            puts "    pushing #{state.name}" if @debug
-            @stack.push(state)
-          end
-        when nil
-          proc do |stream|
-            puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
-            @output_stream.call(tok, stream[0])
-          end
-        else
-          fail "invalid next state: #{next_state.inspect}"
-        end
+                     when :pop!
+                       proc do |stream|
+                         puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
+                         @output_stream.call(tok, stream[0])
+                         puts "    popping stack: 1" if @debug
+                         @stack.pop || fail('empty stack!')
+                       end
+                     when :push
+                       proc do |stream|
+                         puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
+                         @output_stream.call(tok, stream[0])
+                         puts "    pushing #{@stack.last.name}" if @debug
+                         @stack.push(@stack.last)
+                       end
+                     when Symbol
+                       proc do |stream|
+                         puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
+                         @output_stream.call(tok, stream[0])
+                         state = @states[next_state] || self.class.get_state(next_state)
+                         puts "    pushing #{state.name}" if @debug
+                         @stack.push(state)
+                       end
+                     when nil
+                       proc do |stream|
+                         puts "    yielding #{tok.qualname}, #{stream[0].inspect}" if @debug
+                         @output_stream.call(tok, stream[0])
+                       end
+                     else
+                       fail "invalid next state: #{next_state.inspect}"
+                     end
 
         rules << Rule.new(re, callback)
       end
