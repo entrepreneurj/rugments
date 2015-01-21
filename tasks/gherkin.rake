@@ -4,7 +4,7 @@ require 'json'
 I18N_CONFIG_URL = 'https://raw.github.com/cucumber/gherkin/master/lib/gherkin/i18n.json'
 
 module GherkinKeywords
-  extend self
+  module_function
 
   def gherkin_i18n
     @gherkin_i18n ||= JSON.load(open(I18N_CONFIG_URL))
