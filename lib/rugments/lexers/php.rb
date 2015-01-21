@@ -10,6 +10,8 @@ module Rugments
 
       default_options parent: 'html'
 
+      attr_reader :start_inline
+
       def initialize(opts = {})
         # if truthy, the lexer starts highlighting with php code
         # (no <?php required)
@@ -34,10 +36,6 @@ module Rugments
             builtins.merge(fns)
           end
         end
-      end
-
-      def start_inline?
-        !!@start_inline
       end
 
       start do
