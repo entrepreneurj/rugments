@@ -622,7 +622,9 @@ module Rugments
           # the most common, for now...
           next if rule.beginning_of_line && !stream.beginning_of_line?
 
-          if size = stream.skip(rule.re)
+          size = stream.skip(rule.re)
+
+          if size
             puts "    got #{stream[0].inspect}" if @debug
 
             instance_exec(stream, &rule.callback)
