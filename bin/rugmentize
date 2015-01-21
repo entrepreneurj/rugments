@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'thor'
+require 'rugments/cli'
 
-class Cli < Thor
-end
+Rugments::Cli.start(ARGV)

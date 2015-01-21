@@ -18,4 +18,5 @@ Gem::Specification.new do |s|
   ].to_a
   s.executables = %w(rugmentize)
   s.license = 'MIT'
+  s.add_runtime_dependency('thor')
 end
