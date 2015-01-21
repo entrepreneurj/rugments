@@ -7,10 +7,10 @@ def matlab_builtins(&b)
 
   matlab_docs = open(matlab_doc_url).read
 
-  p :docs => matlab_docs
+  p docs: matlab_docs
 
   matlab_docs.scan %r{<a href="[.][.]/matlab/ref/(\w+)[.]html">}m do |word|
-    p :word => word
+    p word: word
     yield word
   end
 end

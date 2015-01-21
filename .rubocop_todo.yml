@@ -82,12 +82,6 @@ Style/Documentation:
 Style/GuardClause:
   Enabled: false
 
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/HashSyntax:
-  Enabled: false
-
 # Offense count: 5
 # Configuration parameters: MaxLineLength.
 Style/IfUnlessModifier:
