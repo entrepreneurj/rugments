@@ -1,6 +1,10 @@
+require_relative 'php/builtins'
+
 module Rugments
   module Lexers
     class PHP < TemplateLexer
+      extend Rugments::Lexers::PHPBuiltins
+
       title 'PHP'
       desc 'The PHP scripting language (php.net)'
       tag 'php'
@@ -20,11 +24,6 @@ module Rugments
         @disabledmodules = opts.delete(:disabledmodules) { [] }
 
         super(opts)
-      end
-
-      def self.builtins
-        load Pathname.new(__FILE__).dirname.join('php/builtins.rb')
-        builtins
       end
 
       def builtins
