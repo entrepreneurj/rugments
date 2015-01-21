@@ -134,11 +134,6 @@ Style/RegexpLiteral:
 Style/Semicolon:
   Enabled: false
 
-# Offense count: 8
-# Cop supports --auto-correct.
-Style/SingleSpaceBeforeFirstArg:
-  Enabled: false
-
 # Offense count: 1
 # Cop supports --auto-correct.
 Style/SpaceAfterComma:
