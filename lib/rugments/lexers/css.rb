@@ -249,7 +249,7 @@ module Rugments
                        Name::Label
                      else
                        Name::Property
-          end
+                     end
 
           groups name_tok, Text, Punctuation
 
