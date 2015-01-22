@@ -1,197 +1,84 @@
 module Rugments
-  class Theme
-    include Tokens
+  module Theme
+    class ThemeBase
+      include Tokens
 
-    class Style < Hash
-      def initialize(theme, hsh = {})
-        super()
-        @theme = theme
-        merge!(hsh)
-      end
-
-      [:fg, :bg].each do |mode|
-        define_method mode do
-          return self[mode] unless @theme
-          @theme.palette(self[mode]) if self[mode]
+      class << self
+        def tag(val = nil)
+          if val.nil?
+            @tag
+          else
+            @tag ||= val
+          end
         end
-      end
 
-      def render(selector, &b)
-        return enum_for(:render, selector).to_a.join("\n") unless b
-
-        return if empty?
-
-        yield "#{selector} {"
-        rendered_rules.each do |rule|
-          yield "  #{rule};"
+        def background_color(val = nil)
+          if val.nil?
+            @background_color
+          else
+            @background_color ||= val
+          end
         end
-        yield '}'
-      end
 
-      def rendered_rules(&b)
-        return enum_for(:rendered_rules) unless b
-        yield "color: #{fg}" if fg
-        yield "background-color: #{bg}" if bg
-        yield 'font-weight: bold' if self[:bold]
-        yield 'font-style: italic' if self[:italic]
-        yield 'text-decoration: underline' if self[:underline]
+        def highlight_color(val = nil)
+          if val.nil?
+            @highlight_color
+          else
+            @highlight_color ||= val
+          end
+        end
 
-        (self[:rules] || []).each(&b)
-      end
-    end
+        def styles(val = nil)
+          if val.nil?
+            @styles
+          else
+            @styles ||= val
+          end
+        end
 
-    def styles
-      @styles ||= self.class.styles.dup
-    end
-
-    @palette = {}
-    def self.palette(arg = {})
-      @palette ||= InheritableHash.new(superclass.palette)
-
-      if arg.is_a? Hash
-        @palette.merge! arg
-        @palette
-      else
-        case arg
-        when /#[0-9a-f]+/i
-          arg
-        else
-          @palette[arg] || fail("not in palette: #{arg.inspect}")
+        # TODO: Remember this one!
+        # http://javieracero.com/blog/the-key-to-ruby-hashes-is-eql-hash
+        def style_for_token(token)
+          styles[token]
         end
       end
     end
 
-    @styles = {}
-    def self.styles
-      @styles ||= InheritableHash.new(superclass.styles)
-    end
+    class BW < ThemeBase
+      tag 'bw'
+      background_color '#ffffff'
 
-    def self.render(opts = {}, &b)
-      new(opts).render(&b)
-    end
+      styles Comment              => 'italic',
+             Comment::Preproc     => 'noitalic',
 
-    class << self
-      def style(*tokens)
-        style = tokens.last.is_a?(Hash) ? tokens.pop : {}
+             Keyword              => 'bold',
+             Keyword::Pseudo      => 'nobold',
+             Keyword::Type        => 'nobold',
 
-        style = Style.new(self, style)
+             Operator::Word       => 'bold',
 
-        tokens.each do |tok|
-          styles[tok] = style
-        end
-      end
+             Name::Class          => 'bold',
+             Name::Namespace      => 'bold',
+             Name::Exception      => 'bold',
+             Name::Entity         => 'bold',
+             Name::Tag            => 'bold',
 
-      def get_own_style(token)
-        token.token_chain.each do |anc|
-          return styles[anc] if styles[anc]
-        end
+             String               => 'italic',
+             # String::Interpol   => 'bold',
+             # String::Escape     => 'bold',
 
-        nil
-      end
+             Generic::Heading     => 'bold',
+             Generic::Subheading  => 'bold',
+             Generic::Emph        => 'italic',
+             Generic::Strong      => 'bold',
+             Generic::Prompt      => 'bold',
 
-      def get_style(token)
-        get_own_style(token) || base_style
-      end
+             Error                => 'border:#FF0000'
 
-      def base_style
-        styles[Token::Tokens::Text]
-      end
-
-      def name(n = nil)
-        return @name if n.nil?
-
-        @name = n.to_s
-        Theme.registry[@name] = self
-      end
-
-      def find(n)
-        registry[n.to_s]
-      end
-
-      def registry
-        @registry ||= {}
-      end
-    end
-  end
-
-  module HasModes
-    def mode(arg = :absent)
-      return @mode if arg == :absent
-
-      @modes ||= {}
-      @modes[arg] ||= get_mode(arg)
-    end
-
-    def get_mode(mode)
-      return self if self.mode == mode
-
-      new_name = "#{name}.#{mode}"
-      Class.new(self) { name(new_name); mode!(mode) }
-    end
-
-    def mode!(arg)
-      @mode = arg
-      send("make_#{arg}!")
-    end
-  end
-
-  class CSSTheme < Theme
-    def initialize(opts = {})
-      @scope = opts[:scope] || '.highlight'
-    end
-
-    def render(&b)
-      return enum_for(:render).to_a.join("\n") unless b
-
-      # shared styles for tableized line numbers
-      yield "#{@scope} table td { padding: 5px; }"
-      yield "#{@scope} table pre { margin: 0; }"
-
-      styles.each do |tok, style|
-        style.render(css_selector(tok), &b)
-      end
-    end
-
-    def render_base(selector, &b)
-      self.class.base_style.render(selector, &b)
-    end
-
-    def style_for(tok)
-      self.class.get_style(tok)
-    end
-
-    private
-
-    def css_selector(token)
-      inflate_token(token).map do |tok|
-        fail "unknown token: #{tok.inspect}" if tok.shortname.nil?
-
-        single_css_selector(tok)
-      end.join(', ')
-    end
-
-    def single_css_selector(token)
-      return @scope if token == Text
-
-      "#{@scope} .#{token.shortname}"
-    end
-
-    # yield all of the tokens that should be styled the same
-    # as the given token.  Essentially this recursively all of
-    # the subtokens, except those which are more specifically
-    # styled.
-    def inflate_token(tok, &b)
-      return enum_for(:inflate_token, tok) unless block_given?
-
-      yield tok
-      tok.sub_tokens.each do |(_, st)|
-        next if styles[st]
-
-        inflate_token(st, &b)
-      end
+      p style_for_token(Error)
     end
   end
 end
 
-lib_path = File.expand_path(File.dirname(__FILE__))
-Dir.glob(File.join(lib_path, 'themes/*.rb')) { |f| require_relative f }
+# lib_path = File.expand_path(File.dirname(__FILE__))
+# Dir.glob(File.join(lib_path, 'themes/*.rb')) { |f| require_relative f }
