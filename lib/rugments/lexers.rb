@@ -229,7 +229,7 @@ module Rugments
         source = case source
                  when String
                    source
-                 when ->(s) { s.respond_to? :read }
+                 when File
                    source.read
                  else
                    fail 'invalid source'
