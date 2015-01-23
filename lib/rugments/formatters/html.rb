@@ -5,7 +5,7 @@ module Rugments
     class HTML < Formatter
       tag 'html'
 
-      # Creates a new <tt>Rugments::Formatter::HTML instance.</tt>
+      # Creates a new <tt>Rugments::Formatter::HTML</tt> instance.
       #
       # [+nowrap+]          If set to True, don't wrap the output at all, not
       #                     even inside a <tt><pre></tt> tag (default: false).
