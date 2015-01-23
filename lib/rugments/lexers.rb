@@ -114,10 +114,11 @@ module Rugments
       # or an alias which are defined in the lexer class.
       def find_by_name(tag)
         tag.downcase!
+        tag = tag.to_sym
 
         if LEXERS_CACHE.key?(tag)
-          require_relative LEXERS_CACHE[tag.to_sym][:source_file]
-          Object.const_get(LEXERS_CACHE[tag.to_sym][:class_name])
+          require_relative LEXERS_CACHE[tag][:source_file]
+          Object.const_get(LEXERS_CACHE[tag][:class_name])
         else
           lexer = LEXERS_CACHE.select do |_k, hash|
             !hash[:aliases].nil? && hash[:aliases].include?(tag)
