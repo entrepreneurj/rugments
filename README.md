@@ -1,6 +1,8 @@
 # Rugments
 
 [![Gem Version](https://badge.fury.io/rb/rugments.svg)](http://badge.fury.io/rb/rugments)
+[![Build Status](https://travis-ci.org/rumpelsepp/rugments.svg)](https://travis-ci.org/rumpelsepp/rugments)
+[![Coverage Status](https://coveralls.io/repos/rumpelsepp/rugments/badge.svg)](https://coveralls.io/r/rumpelsepp/rugments)
 [![Code Climate](https://codeclimate.com/github/rumpelsepp/rugments/badges/gpa.svg)](https://codeclimate.com/github/rumpelsepp/rugments)
 [![Inline docs](http://inch-ci.org/github/rumpelsepp/rugments.svg?branch=master)](http://inch-ci.org/github/rumpelsepp/rugments)
 

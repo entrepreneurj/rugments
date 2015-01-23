@@ -3,8 +3,10 @@ rvm:
   - "2.0"
   - "2.1"
   - "2.2"
-bundler_args: --without development
-before_install: gem update bundler
+
+before_install:
+  - gem update --system
+  - gem --version
 
 notifications:
   email: false

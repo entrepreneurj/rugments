@@ -16,6 +16,7 @@ namespace :mappings do
     lexer_syms = Rugments::Lexers.constants.select do |c|
       Rugments::Lexers.const_get(c).is_a?(Class)
     end
+
     lexer_classes = lexer_syms.map { |sym| Rugments::Lexers.const_get(sym) }
 
     lexer_classes.each do |klass|
