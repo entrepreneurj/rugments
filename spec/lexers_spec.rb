@@ -5,7 +5,7 @@ describe Rugments::Lexer do
     it 'returns an array of all lexer classes' do
       lexers = Rugments::Lexer.all
       expect(lexers).to be_an_instance_of(Array)
-      expect(lexers[0]).to be_an_instance_of(Class)
+      expect(lexers.first).to be_an_instance_of(Class)
       expect(lexers.size).to be > 1
     end
   end

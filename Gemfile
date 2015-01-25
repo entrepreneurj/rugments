@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-
   gem 'yard'
   gem 'github-markup'
   gem 'redcarpet', platforms: :ruby
