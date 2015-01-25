@@ -1,61 +1,46 @@
 module Rugments
   module Lexers
     class C < RegexLexer
-      tag 'c'
-      filenames '*.c', '*.h', '*.idc'
-      mimetypes 'text/x-chdr', 'text/x-csrc'
+      @title = 'C'
+      @desc = 'The C programming language'
+      @tag = 'c'
+      @filenames = %w(*.c *.h *.idc)
+      @mimetypes = %w(text/x-chdr text/x-csrc)
 
-      title 'C'
-      desc 'The C programming language'
+      attr_reader :keywords, :keywords_type, :reserved
+
+      @keywords = Set.new %w(
+        auto break case const continue default do else enum extern
+        for goto if register restricted return sizeof static struct
+        switch typedef union volatile virtual while
+      )
+      @keywords_type = Set.new %w(
+        int long float short double char unsigned signed void
+
+        jmp_buf FILE DIR div_t ldiv_t mbstate_t sig_atomic_t fpos_t
+        clock_t time_t va_list size_t ssize_t off_t wchar_t ptrdiff_t
+        wctrans_t wint_t wctype_t
+
+        _Bool _Complex int8_t int16_t int32_t int64_t
+        uint8_t uint16_t uint32_t uint64_t int_least8_t
+        int_least16_t int_least32_t int_least64_t
+        uint_least8_t uint_least16_t uint_least32_t
+        uint_least64_t int_fast8_t int_fast16_t int_fast32_t
+        int_fast64_t uint_fast8_t uint_fast16_t uint_fast32_t
+        uint_fast64_t intptr_t uintptr_t intmax_t
+        uintmax_t
+      )
+      @reserved = Set.new %w(
+        __asm __int8 __based __except __int16 __stdcall __cdecl
+        __fastcall __int32 __declspec __finally __int61 __try __leave
+        inline _inline __inline naked _naked __naked restrict _restrict
+        __restrict thread _thread __thread typename _typename __typename
+      )
+      @builtins = []
 
       # optional comment or whitespace
       ws = %r{(?:\s|//.*?\n|/[*].*?[*]/)+}
       id = /[a-zA-Z_][a-zA-Z0-9_]*/
-
-      def self.keywords
-        @keywords ||= Set.new %w(
-          auto break case const continue default do else enum extern
-          for goto if register restricted return sizeof static struct
-          switch typedef union volatile virtual while
-        )
-      end
-
-      def self.keywords_type
-        @keywords_type ||= Set.new %w(
-          int long float short double char unsigned signed void
-
-          jmp_buf FILE DIR div_t ldiv_t mbstate_t sig_atomic_t fpos_t
-          clock_t time_t va_list size_t ssize_t off_t wchar_t ptrdiff_t
-          wctrans_t wint_t wctype_t
-
-          _Bool _Complex int8_t int16_t int32_t int64_t
-          uint8_t uint16_t uint32_t uint64_t int_least8_t
-          int_least16_t int_least32_t int_least64_t
-          uint_least8_t uint_least16_t uint_least32_t
-          uint_least64_t int_fast8_t int_fast16_t int_fast32_t
-          int_fast64_t uint_fast8_t uint_fast16_t uint_fast32_t
-          uint_fast64_t intptr_t uintptr_t intmax_t
-          uintmax_t
-        )
-      end
-
-      def self.reserved
-        @reserved ||= Set.new %w(
-          __asm __int8 __based __except __int16 __stdcall __cdecl
-          __fastcall __int32 __declspec __finally __int61 __try __leave
-          inline _inline __inline naked _naked __naked restrict _restrict
-          __restrict thread _thread __thread typename _typename __typename
-        )
-      end
-
-      # high priority for filename matches
-      def self.analyze_text(*)
-        0.3
-      end
-
-      def self.builtins
-        @builtins ||= []
-      end
 
       start { push :bol }
 
@@ -204,6 +189,11 @@ module Rugments
         rule /^\s*#\s*el(?:se|if)/, Comment, :pop!
         rule /^\s*#\s*endif\b.*?(?<!\\)\n/m, Comment, :pop!
         rule /.*?\n/, Comment
+      end
+
+      # high priority for filename matches
+      def self.analyze_text(*)
+        0.3
       end
     end
   end
